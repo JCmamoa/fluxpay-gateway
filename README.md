@@ -1,5 +1,9 @@
 # FluxPay — Gateway de Pagamento Simplificado
 
+[![CI](https://github.com/JCmamoa/fluxpay-gateway/actions/workflows/ci.yml/badge.svg)](https://github.com/JCmamoa/fluxpay-gateway/actions/workflows/ci.yml)
+[![Docker](https://github.com/JCmamoa/fluxpay-gateway/actions/workflows/docker.yml/badge.svg)](https://github.com/JCmamoa/fluxpay-gateway/actions/workflows/docker.yml)
+[![Versão](https://img.shields.io/badge/vers%C3%A3o-v0.2-blueviolet)](specs/payment-gateway.md)
+
 Gateway de pagamento de demonstração construído pelo time autônomo: **@pm → @engineer → @qa → @devops**.
 
 ## Funcionalidades
