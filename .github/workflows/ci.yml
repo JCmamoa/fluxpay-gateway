@@ -33,4 +33,4 @@ jobs:
 
       - name: Rodar testes
         working-directory: app_build
-        run: pytest -q
+        run: python -m pytest -q
