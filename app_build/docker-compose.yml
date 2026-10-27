@@ -1,0 +1,51 @@
+name: fluxpay-gateway
+
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fluxpay-gateway:1.0.0
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      APP_ENV: ${APP_ENV:-demo}
+      DEMO_MODE: ${DEMO_MODE:-true}
+      DEMO_EXPOSE_API_KEY: ${DEMO_EXPOSE_API_KEY:-true}
+      HOST: 0.0.0.0
+      PORT: "8000"
+      DATABASE_PATH: /app/data/gateway.db
+      MERCHANT_ID: ${MERCHANT_ID:-mch_demo}
+      MERCHANT_NAME: ${MERCHANT_NAME:-Loja Demo}
+      API_KEY: ${API_KEY:-sk_demo_fluxpay_2026}
+      WEBHOOK_SECRET: ${WEBHOOK_SECRET:-whsec_demo_fluxpay_2026}
+      # Internal loopback URL: the simulated merchant receiver lives in this container.
+      WEBHOOK_URL: ${WEBHOOK_URL:-http://127.0.0.1:8000/demo/webhook-receiver?endpoint=whe_demo}
+      WEBHOOK_TIMEOUT_SECONDS: ${WEBHOOK_TIMEOUT_SECONDS:-10}
+      WEBHOOK_MAX_ATTEMPTS: ${WEBHOOK_MAX_ATTEMPTS:-6}
+      WEBHOOK_RETRY_SCHEDULE: ${WEBHOOK_RETRY_SCHEDULE:-10,30,120,600,3600}
+      WEBHOOK_JITTER_RATIO: ${WEBHOOK_JITTER_RATIO:-0.2}
+      PIX_KEY: ${PIX_KEY:-demo@fluxpay.local}
+      PIX_CITY: ${PIX_CITY:-SAO PAULO}
+      PIX_EXPIRES_MINUTES: ${PIX_EXPIRES_MINUTES:-30}
+      CARD_AUTHORIZATION_DELAY_MS: ${CARD_AUTHORIZATION_DELAY_MS:-350}
+      WORKER_ENABLED: "true"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - gateway_data:/app/data
+    restart: unless-stopped
+    stop_grace_period: 15s
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request,sys; r=urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3); sys.exit(0 if r.status==200 else 1)"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  gateway_data:
+    name: fluxpay_gateway_data

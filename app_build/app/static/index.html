@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>FluxPay — Gateway Sandbox</title>
+  <meta name="description" content="Console de demonstração do gateway de pagamento: PIX, cartões, fila durável e webhooks assinados." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <div class="backdrop-grid" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="FluxPay início">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M6 21.5 13 7l4 8 3-5 6 11.5H6Z" fill="currentColor" opacity=".95"/>
+          <path d="M6 25h20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="brand-text">
+        <strong>FluxPay</strong>
+        <small>Gateway Sandbox</small>
+      </span>
+    </a>
+
+    <div class="topbar-right">
+      <div class="key-control" role="group" aria-label="Autenticação">
+        <span class="conn-dot" id="conn-dot" data-state="off" title="Desconectado"></span>
+        <input id="api-key" class="key-input" type="password" spellcheck="false"
+               autocomplete="off" placeholder="Bearer API key" aria-label="API key do merchant" />
+        <button class="btn btn-small" type="button" id="connect-btn">Conectar</button>
+      </div>
+      <span class="env-badge" id="env-badge"><span></span> demo</span>
+      <a class="icon-link" href="/docs" target="_blank" rel="noreferrer" title="OpenAPI docs" aria-label="Abrir documentação OpenAPI">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M14 3h7v7M21 3l-9 9M10 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="pulse"></span> Processamento assíncrono · fila durável · webhooks assinados</p>
+        <h1>Receba em segundos.<br /><em>Sem cobrar duas vezes.</em></h1>
+        <p class="hero-sub">
+          Crie cobranças PIX e cartão, acompanhe o ciclo de vida e inspecione cada tentativa
+          de webhook — tudo local, com idempotência real e retries com backoff.
+        </p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" type="button" id="hero-new-payment">Nova cobrança</button>
+          <a class="btn btn-ghost" href="#webhooks">Ver webhooks</a>
+        </div>
+      </div>
+
+      <div class="stats" id="stats" aria-live="polite">
+        <article class="stat">
+          <span class="stat-label">Aprovados</span>
+          <strong class="stat-value" id="stat-succeeded">—</strong>
+          <span class="stat-foot" id="stat-volume">R$ 0,00 processados</span>
+        </article>
+        <article class="stat">
+          <span class="stat-label">Pendentes</span>
+          <strong class="stat-value" id="stat-pending">—</strong>
+          <span class="stat-foot" id="stat-processing">0 processando</span>
+        </article>
+        <article class="stat">
+          <span class="stat-label">Fila durável</span>
+          <strong class="stat-value" id="stat-queue">—</strong>
+          <span class="stat-foot">mensagens a processar</span>
+        </article>
+        <article class="stat">
+          <span class="stat-label">Webhooks</span>
+          <strong class="stat-value" id="stat-webhooks">—</strong>
+          <span class="stat-foot" id="stat-webhook-foot">0 na DLQ</span>
+        </article>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <section class="panel form-panel" aria-labelledby="new-payment-title">
+        <div class="panel-head">
+          <div>
+            <p class="kicker">Checkout</p>
+            <h2 id="new-payment-title">Nova cobrança</h2>
+          </div>
+          <span class="live-tag"><span></span> ao vivo</span>
+        </div>
+
+        <form id="payment-form" novalidate>
+          <div class="segmented" role="tablist" aria-label="Método de pagamento">
+            <button type="button" class="seg-item is-active" data-method="pix" role="tab" aria-selected="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m12 3 4.2 4.2L12 11.4 7.8 7.2 12 3Zm0 18 4.2-4.2L12 12.6l-4.2 4.2L12 21ZM3 12l4.2-4.2L11.4 12l-4.2 4.2L3 12Zm18 0-4.2-4.2L12.6 12l4.2 4.2L21 12Z" stroke-linejoin="round"/></svg>
+              PIX
+            </button>
+            <button type="button" class="seg-item" data-method="credit_card" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6 15h4" stroke-linecap="round"/></svg>
+              Crédito
+            </button>
+            <button type="button" class="seg-item" data-method="debit_card" role="tab" aria-selected="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19" /><circle cx="17" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg>
+              Débito
+            </button>
+          </div>
+
+          <div class="field">
+            <label for="amount">Valor <span class="hint">em centavos na API</span></label>
+            <div class="amount-wrap">
+              <span class="currency">R$</span>
+              <input id="amount" name="amount" inputmode="decimal" value="129,90" autocomplete="off" aria-describedby="amount-cents" />
+            </div>
+            <small class="field-note" id="amount-cents">= 12990 centavos</small>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="customer-name">Cliente <span class="hint">opcional</span></label>
+              <input id="customer-name" name="customer_name" placeholder="Ana Silva" maxlength="120" autocomplete="name" />
+            </div>
+            <div class="field">
+              <label for="customer-email">E-mail <span class="hint">opcional</span></label>
+              <input id="customer-email" name="customer_email" type="email" placeholder="ana@exemplo.com" maxlength="254" autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="description">Descrição</label>
+            <input id="description" name="description" placeholder="Pedido #123" maxlength="500" />
+          </div>
+
+          <fieldset class="card-fields" id="card-fields" hidden>
+            <legend>Dados do cartão <span>nunca persistidos</span></legend>
+            <div class="field">
+              <label for="card-number">Número</label>
+              <input id="card-number" name="card_number" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" maxlength="23" />
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="card-holder">Titular</label>
+                <input id="card-holder" name="card_holder" autocomplete="cc-name" placeholder="ANA SILVA" maxlength="80" />
+              </div>
+              <div class="field">
+                <label for="card-cvv">CVV</label>
+                <input id="card-cvv" name="card_cvv" inputmode="numeric" autocomplete="cc-csc" placeholder="123" maxlength="4" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="exp-month">Mês</label>
+                <input id="exp-month" name="exp_month" inputmode="numeric" placeholder="12" maxlength="2" />
+              </div>
+              <div class="field">
+                <label for="exp-year">Ano</label>
+                <input id="exp-year" name="exp_year" inputmode="numeric" placeholder="2030" maxlength="4" />
+              </div>
+            </div>
+            <div class="test-cards">
+              <span>Cartões de teste</span>
+              <div class="chip-row">
+                <button type="button" class="chip chip-aprovar" data-test-card="4242424242424242">4242 · aprova</button>
+                <button type="button" class="chip chip-recusar" data-test-card="4000000000000002">0002 · recusa</button>
+                <button type="button" class="chip chip-saldo" data-test-card="4000000000009995">9995 · saldo</button>
+              </div>
+            </div>
+          </fieldset>
+
+          <details class="meta-details">
+            <summary>Metadata <span class="hint">JSON opcional</span></summary>
+            <div class="field">
+              <label for="metadata" class="sr-only">Metadata JSON</label>
+              <textarea id="metadata" rows="2" spellcheck="false" placeholder='{"order_id": "ord_123"}'></textarea>
+            </div>
+          </details>
+
+          <button class="btn btn-primary btn-block" type="submit" id="submit-payment">
+            <span class="btn-label">Criar cobrança</span>
+            <span class="spinner" aria-hidden="true"></span>
+          </button>
+          <p class="form-foot" id="form-foot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3 4 6.5v5.2c0 4.6 3.4 8 8 9.3 4.6-1.3 8-4.7 8-9.3V6.5L12 3Z" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Idempotency-Key gerada automaticamente. PAN/CVV descartados.</span>
+          </p>
+        </form>
+      </section>
+
+      <section class="panel list-panel" aria-labelledby="payments-title">
+        <div class="panel-head list-head">
+          <div>
+            <p class="kicker">Ledger</p>
+            <h2 id="payments-title">Pagamentos</h2>
+          </div>
+          <div class="list-tools">
+            <div class="filter-tabs" role="tablist" aria-label="Filtrar pagamentos">
+              <button class="filter is-active" type="button" data-filter="all" role="tab" aria-selected="true">Todos</button>
+              <button class="filter" type="button" data-filter="pending" role="tab" aria-selected="false">Pendentes</button>
+              <button class="filter" type="button" data-filter="succeeded" role="tab" aria-selected="false">Aprovados</button>
+              <button class="filter" type="button" data-filter="failed" role="tab" aria-selected="false">Falhas</button>
+            </div>
+            <button class="icon-btn" id="refresh-btn" type="button" title="Atualizar agora" aria-label="Atualizar agora">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 11a8 8 0 1 0-2.3 6.3M20 5v6h-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="payments-table" aria-live="polite">
+          <div class="table-head">
+            <span>Pagamento</span>
+            <span>Método</span>
+            <span>Valor</span>
+            <span>Status</span>
+            <span>Criado</span>
+            <span></span>
+          </div>
+          <div id="payments-body">
+            <div class="empty-state" id="payments-empty">
+              <div class="empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 7h16M4 12h10M4 17h7" stroke-linecap="round"/><circle cx="18" cy="16" r="3"/></svg>
+              </div>
+              <strong>Nenhum pagamento ainda</strong>
+              <span>Crie a primeira cobrança para ver o fluxo completo.</span>
+            </div>
+          </div>
+        </div>
+        <div class="list-foot">
+          <span id="payments-count">0 pagamentos</span>
+          <span class="muted">atualiza a cada 2,5s</span>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel webhooks-panel" id="webhooks" aria-labelledby="webhooks-title">
+      <div class="panel-head">
+        <div>
+          <p class="kicker">Outbox &amp; entrega</p>
+          <h2 id="webhooks-title">Webhooks</h2>
+        </div>
+        <div class="webhook-actions">
+          <button class="btn btn-small btn-ghost" type="button" id="fail-webhook-btn" title="Faz as próximas 2 entregas falharem para demonstrar retry">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4m0 4h.01M10.3 4.9 3.2 17a2 2 0 0 0 1.7 3h14.2a2 2 0 0 0 1.7-3L13.7 4.9a2 2 0 0 0-3.4 0Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Injetar 2 falhas
+          </button>
+          <button class="btn btn-small btn-ghost" type="button" id="reset-failures-btn" hidden>Limpar falhas</button>
+        </div>
+      </div>
+
+      <div class="endpoint-grid">
+        <div class="endpoint-card">
+          <span class="endpoint-label">Endpoint do merchant</span>
+          <code id="endpoint-url">—</code>
+          <span class="endpoint-meta" id="endpoint-status">aguardando conexão</span>
+        </div>
+        <div class="endpoint-card">
+          <span class="endpoint-label">Signing secret</span>
+          <div class="secret-row">
+            <code id="endpoint-secret">••••••••</code>
+            <button class="icon-btn icon-btn-sm" type="button" id="copy-secret-btn" title="Copiar secret" aria-label="Copiar secret">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+          <span class="endpoint-meta">HMAC-SHA256 · t=&lt;ts&gt;,v1=&lt;hash&gt;</span>
+        </div>
+        <div class="endpoint-card">
+          <span class="endpoint-label">Política de retry</span>
+          <code id="retry-policy">10s · 30s · 2m · 10m · 1h</code>
+          <span class="endpoint-meta" id="retry-meta">5 retries + 1h final · jitter ±20%</span>
+        </div>
+        <div class="endpoint-card endpoint-stat">
+          <span class="endpoint-label">Entregas</span>
+          <div class="mini-stats">
+            <span><b id="wh-delivered">0</b> entregues</span>
+            <span><b id="wh-pending">0</b> pendentes</span>
+            <span><b id="wh-failed">0</b> DLQ</span>
+          </div>
+          <span class="endpoint-meta" id="wh-attempts">0 tentativas registradas</span>
+        </div>
+      </div>
+
+      <div class="webhook-columns">
+        <div class="subpanel">
+          <div class="subpanel-head">
+            <h3>Entregas</h3>
+            <select id="delivery-filter" class="select" aria-label="Filtrar entregas">
+              <option value="">Todas</option>
+              <option value="pending">Pendentes</option>
+              <option value="delivered">Entregues</option>
+              <option value="failed">DLQ</option>
+            </select>
+          </div>
+          <div class="delivery-list" id="delivery-list">
+            <div class="empty-state compact"><strong>Sem entregas</strong><span>Crie um pagamento para gerar eventos.</span></div>
+          </div>
+        </div>
+
+        <div class="subpanel">
+          <div class="subpanel-head">
+            <h3>Recebidos no merchant simulado</h3>
+            <span class="badge badge-neutral" id="receipts-count">0</span>
+          </div>
+          <div class="receipt-list" id="receipt-list">
+            <div class="empty-state compact"><strong>Nada recebido</strong><span>O receiver valida HMAC e deduplica por X-Event-Id.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>
+        <span class="brand-mini">FluxPay</span>
+        <span>Gateway de demonstração · dados fictícios, sem adquirente real.</span>
+      </div>
+      <div class="footer-links">
+        <a href="/health" target="_blank" rel="noreferrer">/health</a>
+        <a href="/v1/metrics" target="_blank" rel="noreferrer">/v1/metrics</a>
+        <a href="/docs" target="_blank" rel="noreferrer">OpenAPI</a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Payment detail modal -->
+  <div class="modal" id="payment-modal" hidden>
+    <div class="modal-backdrop" data-close-payment></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="payment-modal-title">
+      <header class="modal-head">
+        <div>
+          <p class="kicker" id="payment-modal-kicker">Pagamento</p>
+          <h2 id="payment-modal-title">Detalhe</h2>
+        </div>
+        <button class="icon-btn" type="button" data-close-payment aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+      <div class="modal-body" id="payment-modal-body">
+        <div class="loading-block"><span class="spinner dark"></span> Carregando pagamento…</div>
+      </div>
+      <footer class="modal-foot" id="payment-modal-foot"></footer>
+    </div>
+  </div>
+
+  <!-- Webhook delivery modal -->
+  <div class="modal" id="delivery-modal" hidden>
+    <div class="modal-backdrop" data-close-delivery></div>
+    <div class="modal-card modal-card-wide" role="dialog" aria-modal="true" aria-labelledby="delivery-modal-title">
+      <header class="modal-head">
+        <div>
+          <p class="kicker">Webhook delivery</p>
+          <h2 id="delivery-modal-title">Entrega</h2>
+        </div>
+        <button class="icon-btn" type="button" data-close-delivery aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+      <div class="modal-body" id="delivery-modal-body"></div>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toast-stack" aria-live="polite" aria-atomic="false"></div>
+</body>
+</html>

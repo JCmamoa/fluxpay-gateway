@@ -1,0 +1,22 @@
+# Secretos
+.env
+**/.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# Dados e logs locais
+data/
+*.db
+*.db-shm
+*.db-wal
+*.log
+
+# SO / IDE
+.vscode/
+.idea/
+Thumbs.db
