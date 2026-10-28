@@ -1,20 +1,23 @@
-﻿# FluxPay — Gateway de Pagamento Simplificado
+﻿# FluxPay — Gateway de Pagamento + CRM/Dashboard (v0.3)
 
 Gateway de pagamentos local para **PIX**, **cartão de crédito** e **cartão de débito**, com criação
 idempotente, processamento assíncrono em fila durável, histórico imutável e webhooks assinados com
-retry, backoff e DLQ.
+retry, backoff e DLQ — agora com a extensão **v0.3**: hub de eventos com **WebSocket em tempo
+real**, **CRM** (360°, tags, notas, segmentos), **dashboard ao vivo** (Chart.js vendored),
+**automações**, **busca RAG** e **agente IA** com confirmação em 2 passos.
 
-O projeto foi construído a partir da especificação técnica aprovada (`specs/payment-gateway.md`,
-v0.2) e roda no Windows com **um único comando**, nativamente ou via Docker Compose. Todos os
-provedores são simulados; nenhum adquirente real é contatado.
+O projeto foi construído a partir das especificações técnicas aprovadas (`specs/payment-gateway.md`,
+v0.2, e `specs/crm-dashboard.md`, v0.3) e roda no Windows com **um único comando**, nativamente ou
+via Docker Compose. Todos os provedores são simulados; nenhum adquirente real é contatado.
 
 | Item | Valor |
 | --- | --- |
-| Versão | 1.0.0 |
+| Versão | 1.0.0 (gateway v0.2 + extensão v0.3) |
 | API | `http://localhost:8000` |
 | Console de demonstração | `http://localhost:8000/` |
 | Documentação interativa | `http://localhost:8000/docs` |
 | Healthcheck | `http://localhost:8000/health` |
+| WebSocket | `ws://localhost:8000/ws/events?token=<api_key>` |
 | Moeda | BRL, sempre em centavos (inteiro) |
 
 ---
@@ -30,7 +33,8 @@ provedores são simulados; nenhum adquirente real é contatado.
 | Worker e dispatcher | Threads independentes no mesmo processo, com leases e recuperação após restart |
 | HTTP client | httpx 0.28 (webhooks) |
 | PIX | BR Code EMV (copia-e-cola) + QR SVG via `segno` |
-| Console | HTML + CSS + JavaScript puro, servido pela própria API |
+| Console | HTML + CSS + JavaScript puro, servido pela própria API; 6 abas, tema claro/escuro |
+| Realtime | WebSocket nativo do Uvicorn + broadcaster em thread; Chart.js 4.5.0 vendored (sem CDN) |
 | Testes | pytest 8.3 |
 | Empacotamento | Docker multi-stage, non-root (UID 10001), healthcheck e volume nomeado |
 
@@ -228,7 +232,9 @@ ativas).
 
 ## 5. Console de demonstração
 
-Abra <http://localhost:8000/>. O console permite:
+### 5.1 Gateway
+
+Abra <http://localhost:8000/> e use a aba **Gateway**. O console permite:
 
 - criar pagamentos PIX, crédito e débito;
 - filtrar e paginar cobranças;
@@ -250,6 +256,31 @@ Fluxo sugerido:
 4. Acompanhe `pending → processing → succeeded` e o receipt do webhook.
 5. Use **Injetar falhas** (1–20) e crie outro PIX para ver as tentativas e o backoff.
 6. Abra **Webhooks → DLQ** para inspecionar e reprocessar entregas esgotadas.
+
+### 5.2 Abas v0.3 (Dashboard, CRM, Automações, Assistente, Dados)
+
+O console v0.3 tem navegação por 6 abas e tema claro/escuro persistido (`localStorage`):
+
+| Aba | Conteúdo |
+| --- | --- |
+| **Gateway** | Painel de cobranças (v0.2, descrito acima) |
+| **Dashboard** | KPIs (hoje/7d/30d, fila, DLQ) + gráficos Chart.js (linha de volume, rosca por método, barras por status) atualizados em tempo real via WS |
+| **CRM** | Tabela de clientes com tags, busca, view 360° (pagamentos, eventos, notas), criação de notas e tags, segmentos calculados |
+| **Automações** | Lista/cria/edita/exclui regras (`event_type → condições → ação`), com feed de alertas disparados |
+| **Assistente** | Chat com o agente IA: respostas com fontes (RAG) e confirmação em 2 passos para ações sensíveis |
+| **Dados** | Tabela de rollup diário, download de CSV (`payments`, `customers`) e feed de eventos processados |
+
+Demo de ponta a ponta (v0.3):
+
+1. Abra o **Dashboard** — o indicador **WS** no topo deve ficar verde.
+2. Crie e simule um PIX no **Gateway**; a curva do dashboard reage em ≤ 1 s.
+3. No **CRM**, abra o cliente recém-criado, adicione uma nota e uma tag.
+4. Em **Automações**, veja a regra semeada (`webhook falha → alerta no console`) e os alertas
+   gerados quando uma entrega esgota as tentativas.
+5. No **Assistente**, pergunte `"Quero um resumo de pagamentos de hoje"` e depois
+   `"reenvia o webhook do pagamento pay_..."` — a ação sensível exibe confirmação em 2 passos
+   (retry de webhook) ou uma nota com confirmação (`"adiciona nota 'VIP' ao cliente ana@exemplo.com"`).
+6. Em **Dados**, baixe o CSV de pagamentos.
 
 ---
 
@@ -535,6 +566,128 @@ para entregas válidas (ou `duplicate: true`).
 | `422` | `validation_error` | Corpo/query inválidos; inclui detalhes sem ecoar PAN/CVV |
 | `422` | `invalid_cursor` | `starting_after` inválido |
 | `500` | `database_error` / `internal_error` | Falha interna, sem vazar stack trace |
+| `404` | `customer_not_found` | Cliente inexistente (CRM/agent actions) |
+| `404` | `segment_not_found` | Segmento inexistente |
+| `404` | `automation_rule_not_found` | Regra de automação inexistente |
+| `404` | `event_not_found` | `after` inexistente no hub de eventos |
+| `404` | `confirmation_not_found` | Token de confirmação inexistente/expirado |
+| `409` | `confirmation_already_used` | Token de confirmação já executado |
+| `404` | `export_not_found` | Export inválido (`payments\|customers`) |
+
+### 6.10 Rotas v0.3 — hub de eventos, CRM, dashboard, automações, dados, agente e RAG
+
+Todas autenticadas com o mesmo Bearer. Prefixos: `/v1/*` e `WS /ws/events`.
+
+#### Hub de eventos
+
+| Rota | Descrição |
+| --- | --- |
+| `GET /v1/events` | Snapshot do hub (fonte de verdade para reconciliar o WS). Query: `after=<event_id>`, `type=payment.succeeded,crm.customer.created` (lista separada por vírgula), `limit` 1–500, `order=asc\|desc` |
+| `WS /ws/events?token=<api_key>&after=<event_id>` | Broadcast em tempo real. Reconnect com `after` repete tudo após o watermark sem buracos nem duplicatas |
+
+Contrato do WS:
+
+- Autenticação no handshake: token inválido recusa com **close code `4401`**.
+- `after` inexistente: **close code `4400`** com reason explicativa.
+- Mensagens: `{"id": "evt_...", "type": "...", "created_at": "...", "data": {...}}`.
+- Heartbeat: `{"id": null, "type": "server.ping", "data": {}}` a cada `WS_HEARTBEAT_SECONDS`
+  (20 s default); o cliente usa para detectar conexão morta.
+- Reconexão do cliente: tenta `after` do último evento recebido; se expirar/vazar, reconcilia com `GET /v1/events`.
+- Retenção: `EVENT_STREAM_RETENTION_DAYS` (30). A passada de retenção apaga eventos antigos do hub.
+
+#### CRM
+
+| Rota | Descrição |
+| --- | --- |
+| `GET /v1/customers` | Lista clientes com agregados (total pago, nº pagamentos) e tags; filtros `q` (email/nome), `tag`, `limit`, `starting_after` |
+| `GET /v1/customers/{id}` | View 360°: dados, tags, notas, pagamentos, últimos eventos, segmentos |
+| `POST /v1/customers/{id}/notes` | Adiciona nota (body 1–2000, author 1–80) |
+| `POST /v1/customers/{id}/tags` | Adiciona tag (normalizada para minúsculas, 1–40 chars) |
+| `GET /v1/segments` | Lista segmentos declarativos com contagem atual |
+| `POST /v1/segments` | Cria segmento. Definição (pelo menos 1 regra): `{"recency_max_days": 30, "frequency_min": 3, "method": "pix", "min_amount_cents": 10000}` — todos opcionais, combináveis |
+
+A contagem é calculada na criação e reexecutada pelo job agendado (`JOBS_SEGMENTS_SECONDS`).
+
+#### Automações
+
+| Rota | Descrição |
+| --- | --- |
+| `GET /v1/automations/rules` | Lista regras (inclui seed `ar_seed_webhook_alert`) |
+| `POST /v1/automations/rules` | Cria regra: `name`, `event_type` (exato ou curinga de namespace `payment.*`), `conditions` (máx 10), `action_type` ∈ `alerta_no_console` \| `tag_customer` \| `retry_webhook`, `action_config`, `enabled` |
+| `GET /v1/automations/rules/{id}` | Detalhe |
+| `PATCH /v1/automations/rules/{id}` | Edita campos e/ou liga/desliga (`{"enabled": false}`) |
+| `DELETE /v1/automations/rules/{id}` | Exclui |
+| `GET /v1/automations/runs` | Auditoria de execuções (status `executed`\|`skipped`\|`error`, `execution_log`) |
+
+Execução: a cada evento do hub, as regras habilitadas com `event_type` correspondente são
+avaliadas. Condições declarativas por chave do payload:
+
+- `{"reason": "card_declined"}` — igualdade (strings sem caixa sensível);
+- sufixos comparadores: `amount_gte`, `amount_lte`, `reason_ne` (`>=`, `<=`, `!=`);
+- comparação contra o payload do evento achatado (+ `event_type`, `event_id`; o payload do
+  ciclo de vida do pagamento usa `reason` como motivo da falha).
+
+A auditoria fica em `automation_runs` (append-only, em espelho no hub). `UNIQUE(rule_id, event_id)`
++ short-circuit na avaliação garantem **no máximo uma execução por (regra, evento)** — at-least-once
+sem efeitos duplicados. A regra seed `ar_seed_webhook_alert` escuta `webhook.failed` (entrega que
+esgotou as tentativas = DLQ) e dispara `alerta_no_console` com a mensagem
+“Webhook falhou e foi para a DLQ ({payment_id}, tentativa {attempts})”.
+
+#### Dashboard e analytics
+
+| Rota | Descrição |
+| --- | --- |
+| `GET /v1/analytics/summary` | KPIs: pagamentos nas janelas hoje/7d/30d, volume, taxa de falha, fila, DLQ |
+| `GET /v1/analytics/timeseries` | Série por dia (`days=30`): `count`, `volume`, `failures` — alimenta os gráficos |
+| `GET /v1/analytics/daily` | Rollups diários consolidados (`analytics_daily`, calculados pelo job agendado) |
+
+#### Dados (exportações)
+
+| Rota | Descrição |
+| --- | --- |
+| `GET /v1/data/exports/payments` | CSV streaming: id, status, método, valor, cliente, criado_em... |
+| `GET /v1/data/exports/customers` | CSV streaming: id, email, nome, total pago, nº pagamentos, tags |
+
+Headers de resposta incluem `Content-Disposition: attachment; filename="..csv"`; `kind` inválido →
+`404 export_not_found`. A aba **Dados** do console combina as duas exportações com o rollup de
+`GET /v1/analytics/daily` (tabela) e o feed de `GET /v1/events`.
+
+#### Agente IA (chat + confirmação em 2 passos)
+
+| Rota | Descrição |
+| --- | --- |
+| `POST /v1/agent/chat` | `{"question": "..."}`. Resposta: `{"object": "agent_reply", "answer", "sources", "action", "confirmation_required", "engine", "tools_used", "latency_ms"}` |
+| `POST /v1/agent/confirm` | `{"token": "..."}`. Executa a ação pendente (2º passo) |
+
+Fluxo em 2 passos para ações sensíveis (`retry_webhook` quando a pergunta menciona
+retry/reprocess/reenvia com um `pay_...` ou `whd_...`; `criar_nota` para adicionar nota a um
+cliente por e-mail ou `cus_...`):
+
+1. `POST /v1/agent/chat` detecta a intenção e devolve
+   `action.confirmation_required = true` + `action.token` + vencimento
+   (`AGENT_CONFIRM_TTL_SECONDS`, 600 s). Nada é executado; o hub registra
+   `agent.action.pending`.
+2. O operador reenvia explicitamente `POST /v1/agent/confirm` com o token; aí sim a ação é
+   executada e auditada (`agent_audit_log`, append-only). Token já usado → `409
+   confirmation_already_used`.
+
+Perguntas normais (resumo, consulta de pagamento, consulta de cliente, regras de automação) são
+respondidas direto, com fontes RAG. A redação final usa um LLM opcional (`OPENAI_COMPATIBLE_*`);
+sem LLM configurado, o fallback local responde com as mesmas fontes — sempre com `latency_ms
+< 1500` no fallback.
+
+Rate limit por IP+merchant (`AGENT_RATE_LIMIT_PER_MINUTE`, 30) para proteger o chat.
+
+#### RAG
+
+| Rota | Descrição |
+| --- | --- |
+| `GET /v1/rag/search?q=...&limit=5` | Busca léxica BM25 sobre payments, customers, event feeds, docs do projeto (`q` 2–300, `limit` 1–20) |
+| `POST /v1/rag/reindex` | Força reindexação completa (payments, customers, event feeds do dia, docs); `?force=true` reprocessa o que já está íntegro. Resposta `202` com contadores |
+
+Fontes indexadas e refresh: pagamentos e clientes atualizados na gravação; event feed do dia e
+documentos do projeto (`README.md`, `specs/*.md` se `RAG_SPECS_DIR` existir) via job agendado
+(`JOBS_RAG_SECONDS`). Sem dependência externa: indexador BM25 léxico próprio em SQLite.
 
 ---
 
@@ -723,11 +876,17 @@ Cobertura por arquivo:
 | `tests/test_state_machine.py` | Transições CAS válidas/inválidas, duplicatas, expiração, recuperação de fila |
 | `tests/test_pix.py` | BR Code, CRC, txid, QR, simulação, expiração |
 | `tests/test_webhooks.py` | Assinatura, headers, retry/backoff, DLQ, replay manual, deduplicação |
+| `tests/test_crm.py` | 360°, notas, tags, segmentos declarativos, agregados e paginação |
+| `tests/test_automations.py` | CRUD de regras, avaliação de eventos, ações (alerta/tag/retry), auditoria |
+| `tests/test_events_ws.py` | Snapshot do hub, WS real (uvicorn), auth 4401, `after` 4400, heartbeat, fanout |
+| `tests/test_agent_rag.py` | RAG (indexação, BM25, reindex), agente (fallback local, broadcast de eventos, confirm 2-passos), latência |
+| `tests/test_data.py` | Exports CSV (payments/customers), rollup, feed de eventos |
+| `tests/test_console_static.py` | Estáticos do console: scripts, CSP-compat, vendor Chart.js com header MIT |
 
-**Última execução:** `38 passed` em uma suíte que inclui um servidor HTTP real para o teste
-concorrente. Além disso, foi executado um smoke test ao vivo com 42 verificações (console, headers
-de segurança, auth, PIX, cartões, idempotência concorrente, webhooks com falha injetada, DLQ,
-paginação e métricas), todas aprovadas.
+**Última execução:** `80 passed` em ~49 s — os 38 testes do gateway (zero regressão) + 42 novos do
+v0.3. A suíte v0.3 inclui um servidor uvicorn real para o teste de WS e outro para idempotência
+concorrente. Além disso, foi executado um smoke test E2E do console v0.3 (abas, WS ao vivo, CRM,
+automações, agente com confirmação, CSV e tema) descrito na seção 5.2.
 
 Testes usam banco temporário e a API key `sk_test_fluxpay_automated_2026`; nenhum dado do demo é
 tocado.
@@ -772,6 +931,26 @@ demo.
 | `QUEUE_LEASE_SECONDS` | `120` | Lease de mensagens em processamento |
 | `MAX_BODY_BYTES` | `262144` | Limite de corpo (256 KiB) |
 | `LOG_LEVEL` | `INFO` | Nível de log |
+| `EVENT_FANOUT` | `true` | Liga o hub de eventos: fanout para automações/RAG + broadcast WS |
+| `WS_ENABLED` | `true` | Monta `WS /ws/events` |
+| `WS_POLL_SECONDS` | `0.15` | Intervalo de polling do broadcaster |
+| `WS_HEARTBEAT_SECONDS` | `20` | Intervalo do `server.ping` |
+| `EVENT_STREAM_RETENTION_DAYS` | `30` | Retenção do hub antes da passada de limpeza |
+| `JOBS_ENABLED` | *(segue `WORKER_ENABLED`)* | Liga os jobs agendados independentemente do worker |
+| `JOBS_SEGMENTS_SECONDS` | `60` | Recalcula segmentos declarativos |
+| `JOBS_ANALYTICS_SECONDS` | `180` | Consolida rollups diários |
+| `JOBS_RAG_SECONDS` | `300` | Reindexa event feeds do dia + docs |
+| `JOBS_RETENTION_SECONDS` | `900` | Varre expirações de confirmação e retenção do hub |
+| `ANALYTICS_ROLLUP_DAYS` | `92` | Janela de rollup consolidado |
+| `RAG_ENABLED` | `true` | Liga indexação e busca RAG |
+| `RAG_SPECS_DIR` | `../specs` | Diretório de specs `.md` indexadas (inexistente → degrada sem erro) |
+| `AGENT_RATE_LIMIT_PER_MINUTE` | `30` | Rate limit do chat por merchant |
+| `AGENT_LLM_TIMEOUT_SECONDS` | `30` | Timeout da chamada ao LLM opcional |
+| `AGENT_CONFIRM_TTL_SECONDS` | `600` | Validade do token de confirmação |
+| `PII_REDACT_EMAIL` | `0` | `1` mascara e-mails no texto das respostas do agente |
+| `OPENAI_COMPATIBLE_BASE_URL` | *(vazio)* | LLM opcional compatível com OpenAI (segredos fora do código) |
+| `OPENAI_COMPATIBLE_API_KEY` | *(vazio)* | API key do LLM opcional |
+| `OPENAI_COMPATIBLE_MODEL` | *(vazio)* | Modelo do LLM opcional |
 
 O merchant e o endpoint demo são semeados de forma idempotente no boot. Para semear/inspecionar
 manualmente (a key é armazenada hasheada):
@@ -832,27 +1011,56 @@ app_build/
 │  ├─ utils.py                    # IDs, tempo ISO, JSON canônico
 │  ├─ api/
 │  │  ├─ deps.py                  # auth Bearer e injeções
+│  │  ├─ agent.py                 # /v1/agent/chat + /v1/agent/confirm (2 passos)
+│  │  ├─ analytics.py             # /v1/analytics/summary|timeseries|daily
+│  │  ├─ automations.py           # /v1/automations/rules|runs
+│  │  ├─ crm.py                   # /v1/customers* e /v1/segments
+│  │  ├─ data.py                  # /v1/data/exports/{payments,customers}
 │  │  ├─ demo.py                  # console bootstrap, receiver, fault injection
+│  │  ├─ events_api.py            # /v1/events + WS /ws/events
 │  │  ├─ payments.py              # /v1/payments*
+│  │  ├─ rag.py                   # /v1/rag/search|reindex
 │  │  ├─ system.py                # /health, /v1/me, /v1/metrics
 │  │  └─ webhooks.py              # endpoints, deliveries, DLQ retry
 │  ├─ services/
+│  │  ├─ agent.py                 # agente IA: intents, tools, RAG, confirm
+│  │  ├─ analytics.py             # KPIs, timeseries, rollups, exports CSV
+│  │  ├─ automations.py           # regras, avaliação de eventos, ações, auditoria
+│  │  ├─ crm.py                   # customers 360°, notes, tags, segments
 │  │  ├─ dispatcher.py            # loop do dispatcher
+│  │  ├─ events.py                # event hub: append, snapshot, retenção
+│  │  ├─ jobs.py                  # jobs agendados (segmentos, rollup, RAG, retenção)
 │  │  ├─ metrics.py               # snapshot operacional
 │  │  ├─ payments.py              # idempotência, criação, CAS, expiração
 │  │  ├─ queue.py                 # fila durável com lease e retry
-│  │  ├─ seed.py                  # merchant + endpoint demo
+│  │  ├─ rag.py                   # corpus, indexação, busca BM25
+│  │  ├─ seed.py                  # merchant + endpoint demo + regras seed
 │  │  ├─ webhook_admin.py         # consulta/replay de entregas
 │  │  ├─ webhooks.py              # eventos, outbox, HMAC, retry, DLQ
-│  │  └─ worker.py                # loop do worker
+│  │  ├─ worker.py                # loop do worker
+│  │  └─ ws.py                    # registro de conexões, broadcast, heartbeat
 │  └─ static/
-│     ├─ index.html               # console demo
-│     ├─ styles.css
-│     ├─ app.js
+│     ├─ index.html               # console demo (6 abas)
+│     ├─ styles.css               # tema escuro/claro + componentes v0.3
+│     ├─ app.js                   # core + navegação por abas
+│     ├─ theme.js                 # tema claro/escuro persistido
+│     ├─ ws.js                    # cliente WS com reconnect + reconciliação
+│     ├─ dashboard.js             # gráficos Chart.js dos KPIs
+│     ├─ crm.js                   # CRM (tabela, 360°, notas, tags, segmentos)
+│     ├─ automations.js           # regras de automação
+│     ├─ agent.js                 # chat + confirmação em 2 passos
+│     ├─ data.js                  # rollup, CSV, feed de eventos
+│     ├─ vendor/chart.umd.js      # Chart.js 4.5.0 vendored (MIT, sem CDN)
 │     └─ favicon.svg
 ├─ tests/
 │  ├─ conftest.py                 # fixtures + servidor HTTP real
 │  ├─ helpers.py
+│  ├─ test_agent_rag.py
+│  ├─ test_automations.py
+│  ├─ test_console_static.py
+│  ├─ test_crm.py
+│  ├─ test_data.py
+│  ├─ test_events_ws.py
 │  ├─ test_api.py
 │  ├─ test_idempotency.py
 │  ├─ test_pix.py
@@ -912,6 +1120,33 @@ Decisões e extensões que vão além do mínimo (sem alterar contratos obrigat�
    validados estaticamente (contexto, permissões, healthcheck, volume, `.dockerignore`) e a execução
    nativa foi validada de ponta a ponta. O build deve ser confirmado em uma máquina com Docker
    Desktop.
+
+### 14.1 Decisões da extensão v0.3 (CRM/Dashboard)
+
+1. **`specs/` fora do contexto Docker.** O contexto de build é `app_build/`; copiar `../specs` para
+   dentro da imagem exigiria mudar o contexto e engolir arquivos de documentação no runtime. O
+   fallback escolhido: a imagem indexa o `README.md` embutido + feeds de eventos, e quem quiser as
+   specs no RAG bind-monta o diretório e define `RAG_SPECS_DIR` (Compose traz o exemplo comentado).
+   O serviço degrada sem erro quando o diretório não existe.
+2. **Nunca apagar regras semeadas.** O seed cria o merchant, o endpoint demo e a regra
+   `ar_seed_webhook_alert` de forma idempotente a cada boot.
+3. **Efeitos idempotentes nas automações.** `UNIQUE(rule_id, event_id)` + short-circuit na
+   avaliação garante no máximo uma execução por (regra, evento), mesmo com reavaliações.
+4. **Ferramenta com confirmação (`confirm`) separada da resposta.** O 1º passo nunca executa
+   efeito; o token TTL curto evita confirmações autoritativas penduradas para sempre.
+5. **Fallback local do agente sem LLM** (A-09): o chat nunca quebra sem `OPENAI_COMPATIBLE_*`;
+   `engine` informa `local` vs `llm` na resposta.
+6. **Chart.js vendored**, não CDN, para respeitar o CSP `self` e funciona offline.
+7. **Tema persistido** em `localStorage` + `prefers-color-scheme` no primeiro acesso.
+
+### 14.2 Limitações v0.3
+
+- **Automações:** até 10 condições por regra (`==`, `_ne`, `_gte`, `_lte`); sem `OR`, strings com curinga ou campos aninhados.
+- **Segmentos:** definição declarativa (`recency_days`, `frequency_min`, etc.) sem filtros custom.
+- **Dashboard:** sem histórico de KPIs de fila/DLQ — só o estado atual por janela.
+- **WS:** single-node; sem persistência de conexões entre processos ou multicast multi-worker.
+- **RAG:** BM25 léxico próprio; sem embedding vetorial, reranking ou OCR de documentos.
+- **Agente:** rate limit por processo (`AGENT_RATE_LIMIT_PER_MINUTE`), sem limitador global entre réplicas.
 
 ---
 

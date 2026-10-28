@@ -139,3 +139,86 @@ class WebhookEndpointPatch(StrictModel):
 
 class DemoFailureRequest(StrictModel):
     count: int = Field(ge=0, le=20)
+
+
+# --------------------------------------------------------------------------- #
+# v0.3 — CRM
+# --------------------------------------------------------------------------- #
+class CustomerNoteCreate(StrictModel):
+    body: str = Field(min_length=1, max_length=2000)
+    author: str = Field(default="operator", min_length=1, max_length=80)
+
+
+class CustomerTagCreate(StrictModel):
+    tag: str = Field(min_length=1, max_length=40)
+
+    @field_validator("tag")
+    @classmethod
+    def normalize_tag(cls, value: str) -> str:
+        cleaned = " ".join(value.split()).lower()
+        if not re.match(r"^[a-z0-9][a-z0-9\-_. ]*$", cleaned):
+            raise ValueError("tag may only contain letters, numbers, '-', '_', '.' and spaces")
+        return cleaned
+
+
+class SegmentDefinition(StrictModel):
+    recency_max_days: int | None = Field(default=None, ge=0, le=3650)
+    frequency_min: int | None = Field(default=None, ge=1, le=1000)
+    method: Literal["pix", "credit_card", "debit_card"] | None = None
+    min_amount_cents: int | None = Field(default=None, ge=0)
+
+    @model_validator(mode="after")
+    def at_least_one_rule(self) -> "SegmentDefinition":
+        chosen = [self.recency_max_days, self.frequency_min, self.method, self.min_amount_cents]
+        if all(item is None for item in chosen):
+            raise ValueError("definition needs at least one rule (recency/frequency/method/min_amount)")
+        return self
+
+
+class SegmentCreate(StrictModel):
+    name: str = Field(min_length=2, max_length=80, pattern=r"^[a-z0-9][a-z0-9\-_. ]*$")
+    definition: SegmentDefinition
+
+
+# --------------------------------------------------------------------------- #
+# v0.3 — Automações
+# --------------------------------------------------------------------------- #
+class AutomationRuleCreate(StrictModel):
+    name: str = Field(min_length=3, max_length=120)
+    event_type: str = Field(min_length=3, max_length=80)
+    conditions: dict[str, Any] = Field(default_factory=dict)
+    action_type: Literal["alerta_no_console", "tag_customer", "retry_webhook"]
+    action_config: dict[str, Any] = Field(default_factory=dict)
+    enabled: bool = True
+
+    @field_validator("conditions")
+    @classmethod
+    def validate_conditions(cls, value: dict[str, Any]) -> dict[str, Any]:
+        if len(value) > 10:
+            raise ValueError("conditions may contain at most 10 keys")
+        for key, expected in value.items():
+            if not isinstance(key, str) or len(key) > 64:
+                raise ValueError("condition keys must be short strings")
+            if not isinstance(expected, (str, int, float, bool)):
+                raise ValueError("condition values must be scalars")
+        return value
+
+
+class AutomationRulePatch(StrictModel):
+    name: str | None = Field(default=None, min_length=3, max_length=120)
+    event_type: str | None = Field(default=None, min_length=3, max_length=80)
+    conditions: dict[str, Any] | None = None
+    action_type: Literal["alerta_no_console", "tag_customer", "retry_webhook"] | None = None
+    action_config: dict[str, Any] | None = None
+    enabled: bool | None = None
+
+
+# --------------------------------------------------------------------------- #
+# v0.3 — Agent IA
+# --------------------------------------------------------------------------- #
+class AgentChatRequest(StrictModel):
+    question: str = Field(min_length=3, max_length=1000)
+
+
+class AgentConfirmRequest(StrictModel):
+    token: str = Field(min_length=8, max_length=128)

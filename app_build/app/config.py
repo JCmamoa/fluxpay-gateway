@@ -135,6 +135,45 @@ class Settings:
     log_level: str = "INFO"
     max_body_bytes: int = 256 * 1024
 
+    # ---- v0.3: real-time hub / WebSocket ------------------------------------ #
+    ws_enabled: bool = True
+    ws_poll_seconds: float = 0.15
+    ws_heartbeat_seconds: float = 20.0
+    event_stream_retention_days: int = 30
+
+    # ---- v0.3: scheduled jobs (segments, RAG sweep, rollups, retention) ------ #
+    event_fanout: bool = True  # enqueue automation/RAG consumers on hub events
+    jobs_enabled: bool | None = None  # None = follow worker_enabled
+    jobs_segments_seconds: float = 60.0
+    jobs_analytics_seconds: float = 180.0
+    jobs_rag_seconds: float = 300.0
+    jobs_retention_seconds: float = 900.0
+    analytics_rollup_days: int = 92
+
+    # ---- v0.3: RAG ----------------------------------------------------------- #
+    rag_enabled: bool = True
+    rag_specs_dir: Path = field(default_factory=lambda: BASE_DIR.parent / "specs")
+    rag_index_payments_limit: int = 2000
+    rag_index_customers_limit: int = 2000
+    rag_index_feed_days: int = 7
+
+    # ---- v0.3: Agent IA (LLM opcional e plugável, A-09) ---------------------- #
+    llm_base_url: str = ""
+    llm_api_key: str = ""
+    llm_model: str = ""
+    agent_llm_timeout_seconds: float = 30.0
+    agent_rate_limit_per_minute: int = 30
+    agent_confirm_ttl_seconds: float = 600.0
+    pii_redact_email: bool = False
+
+    @property
+    def llm_configured(self) -> bool:
+        return bool(self.llm_base_url and self.llm_model)
+
+    @property
+    def jobs_active(self) -> bool:
+        return self.worker_enabled if self.jobs_enabled is None else self.jobs_enabled
+
     @property
     def is_production(self) -> bool:
         return self.app_env.strip().lower() in {"prod", "production"}
@@ -160,6 +199,16 @@ class Settings:
             raise ValueError("PIX_EXPIRES_MINUTES must be between 1 and 1440")
         if self.card_authorization_delay_ms < 0:
             raise ValueError("CARD_AUTHORIZATION_DELAY_MS must be >= 0")
+        if self.event_stream_retention_days < 1:
+            raise ValueError("EVENT_STREAM_RETENTION_DAYS must be >= 1")
+        if self.agent_rate_limit_per_minute < 1:
+            raise ValueError("AGENT_RATE_LIMIT_PER_MINUTE must be >= 1")
+        if self.agent_confirm_ttl_seconds < 5:
+            raise ValueError("AGENT_CONFIRM_TTL_SECONDS must be >= 5")
+        if self.llm_base_url and not self.llm_base_url.startswith(("http://", "https://")):
+            raise ValueError("OPENAI_COMPATIBLE_BASE_URL must be an http(s) URL")
+        if self.llm_base_url and not self.llm_model:
+            raise ValueError("OPENAI_COMPATIBLE_MODEL must be set together with the base URL")
 
     @classmethod
     def from_env(cls) -> "Settings":
@@ -201,6 +250,34 @@ class Settings:
             queue_lease_seconds=_env_int("QUEUE_LEASE_SECONDS", 120),
             log_level=os.getenv("LOG_LEVEL", "INFO").upper(),
             max_body_bytes=_env_int("MAX_BODY_BYTES", 256 * 1024),
+            # v0.3
+            event_fanout=_env_bool("EVENT_FANOUT", True),
+            ws_enabled=_env_bool("WS_ENABLED", True),
+            ws_poll_seconds=_env_float("WS_POLL_SECONDS", 0.15),
+            ws_heartbeat_seconds=_env_float("WS_HEARTBEAT_SECONDS", 20.0),
+            event_stream_retention_days=_env_int("EVENT_STREAM_RETENTION_DAYS", 30),
+            jobs_enabled=(
+                None
+                if not os.getenv("JOBS_ENABLED")
+                else _env_bool("JOBS_ENABLED", True)
+            ),
+            jobs_segments_seconds=_env_float("JOBS_SEGMENTS_SECONDS", 60.0),
+            jobs_analytics_seconds=_env_float("JOBS_ANALYTICS_SECONDS", 180.0),
+            jobs_rag_seconds=_env_float("JOBS_RAG_SECONDS", 300.0),
+            jobs_retention_seconds=_env_float("JOBS_RETENTION_SECONDS", 900.0),
+            analytics_rollup_days=_env_int("ANALYTICS_ROLLUP_DAYS", 92),
+            rag_enabled=_env_bool("RAG_ENABLED", True),
+            rag_specs_dir=Path(os.getenv("RAG_SPECS_DIR", str(BASE_DIR.parent / "specs"))).expanduser(),
+            rag_index_payments_limit=_env_int("RAG_INDEX_PAYMENTS_LIMIT", 2000),
+            rag_index_customers_limit=_env_int("RAG_INDEX_CUSTOMERS_LIMIT", 2000),
+            rag_index_feed_days=_env_int("RAG_INDEX_FEED_DAYS", 7),
+            llm_base_url=os.getenv("OPENAI_COMPATIBLE_BASE_URL", ""),
+            llm_api_key=os.getenv("OPENAI_COMPATIBLE_API_KEY", ""),
+            llm_model=os.getenv("OPENAI_COMPATIBLE_MODEL", ""),
+            agent_llm_timeout_seconds=_env_float("AGENT_LLM_TIMEOUT_SECONDS", 30.0),
+            agent_rate_limit_per_minute=_env_int("AGENT_RATE_LIMIT_PER_MINUTE", 30),
+            agent_confirm_ttl_seconds=_env_float("AGENT_CONFIRM_TTL_SECONDS", 600.0),
+            pii_redact_email=_env_bool("PII_REDACT_EMAIL", False),
         )
         if settings.is_production:
             for required in ("API_KEY", "WEBHOOK_SECRET"):

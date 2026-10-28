@@ -157,17 +157,25 @@ def retry_delivery(db: Any, merchant_id: str, delivery_id: str) -> dict[str, Any
             raise ApiError(404, "webhook_delivery_not_found", "Webhook delivery not found")
         if row["status"] == "delivered":
             raise ApiError(409, "delivery_already_delivered", "This delivery already succeeded")
-        now = iso_now()
-        conn.execute(
-            """
-            UPDATE webhook_deliveries
-            SET status = 'pending', attempts = 0, next_attempt_at = ?, locked_until = NULL,
-                last_error = NULL, last_response_code = NULL, updated_at = ?
-            WHERE id = ?
-            """,
-            (now, now, delivery_id),
-        )
+        requeue_delivery_row(conn, delivery_id)
     return get_delivery(db, merchant_id, delivery_id)
+
+
+def requeue_delivery_row(conn: Any, delivery_id: str) -> None:
+    """Reset a DLQ/pending delivery row so the dispatcher tries it again.
+
+    Idempotent for deliveries that are already delivered (no status change).
+    """
+    now = iso_now()
+    conn.execute(
+        """
+        UPDATE webhook_deliveries
+        SET status = 'pending', attempts = 0, next_attempt_at = ?, locked_until = NULL,
+            last_error = NULL, last_response_code = NULL, updated_at = ?
+        WHERE id = ? AND status IN ('pending', 'failed')
+        """,
+        (now, now, delivery_id),
+    )
 
 
 def delivery_counts(db: Any, merchant_id: str) -> dict[str, int]:

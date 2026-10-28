@@ -21,6 +21,7 @@ import httpx
 from ..config import Settings
 from ..security import sign_webhook
 from ..utils import canonical_json, iso_after, iso_now, new_id, parse_iso, truncate
+from . import events
 
 logger = logging.getLogger("app.webhooks")
 
@@ -146,6 +147,34 @@ def emit_payment_event(
         "INSERT INTO payment_events(id, payment_id, type, payload, created_at) VALUES (?, ?, ?, ?, ?)",
         (event_id, row["id"], event_type, canonical_json(audit_payload), created_at),
     )
+
+    # Central event hub: every payment lifecycle change is auditable and gets
+    # broadcast live (RF-14). Fan-out enqueues automation/RAG consumers.
+    fanout = settings.event_fanout
+    events.record_event(
+        conn,
+        event_type,
+        {
+            "payment_id": row["id"],
+            "status": row["status"],
+            "method": row["method"],
+            "amount_cents": row["amount_cents"],
+            "customer_email": row.get("customer_email"),
+            "from_status": from_status,
+            "to_status": row["status"],
+            "reason": reason,
+        },
+        fanout=fanout,
+    )
+    # CRM ripple: attach every transition to the customer timeline (the
+    # customer is created on the payment itself; here we only record events).
+    payment_dict = dict(row)
+    if payment_dict.get("customer_email"):
+        from .crm import record_customer_event_from_payment
+
+        record_customer_event_from_payment(
+            conn, payment_dict, event_type=event_type, fanout=fanout
+        )
 
     created = 0
     if event_type in WEBHOOK_EVENT_TYPES and enqueue_webhook:
@@ -314,6 +343,31 @@ def _attempt_delivery(
     duration_ms = int((time.perf_counter() - started) * 1000)
     now = iso_now()
 
+    # Payment context for hub events and automation conditions.
+    context: dict[str, Any] = {}
+    try:
+        snapshot = (json.loads(delivery["payload"]) or {}).get("data", {}).get("payment") or {}
+        context.update(
+            {
+                "method": snapshot.get("method"),
+                "amount_cents": snapshot.get("amount"),
+                "customer_email": snapshot.get("customer_email"),
+            }
+        )
+    except (TypeError, ValueError):
+        pass
+    hub_payload = {
+        "delivery_id": delivery["id"],
+        "event_id": delivery["event_id"],
+        "payment_id": delivery["payment_id"],
+        "endpoint_url": delivery["endpoint_url"],
+        "attempt_no": attempt_no,
+        "attempts": int(delivery["attempts"]),
+        "response_code": response_code,
+        "error": error,
+        **context,
+    }
+
     with db.transaction() as conn:
         conn.execute(
             """
@@ -324,6 +378,7 @@ def _attempt_delivery(
             (delivery["id"], attempt_no, response_code, error, duration_ms, now),
         )
         if success:
+            events.record_event(conn, "webhook.delivered", hub_payload, fanout=settings.event_fanout)
             conn.execute(
                 """
                 UPDATE webhook_deliveries
@@ -357,6 +412,7 @@ def _attempt_delivery(
                     """,
                     (response_code, error, now, delivery["id"]),
                 )
+                events.record_event(conn, "webhook.failed", hub_payload, fanout=settings.event_fanout)
                 logger.warning(
                     "webhook moved to DLQ",
                     extra={

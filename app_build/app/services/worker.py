@@ -1,4 +1,9 @@
-"""Payment worker: claims durable queue messages and drives the state machine."""
+"""Worker: claims durable queue messages and routes them to their handlers.
+
+Consumers (ARQ-09): the payment worker is the original consumer (v0.2) and
+extended in v0.3 to deliver at-least-once processing for automations, RAG
+indexing, segment recomputation and analytics rollups.
+"""
 
 from __future__ import annotations
 
@@ -15,14 +20,35 @@ logger = logging.getLogger("app.worker")
 
 
 def handle_message(db: Any, settings: Settings, message: dict[str, Any]) -> str:
-    if message["type"] != queue.PAYMENT_PROCESS:
-        raise ValueError(f"Unsupported message type: {message['type']}")
+    message_type = message["type"]
     try:
-        payload = json.loads(message["payload"])
-        payment_id = payload["payment_id"]
-    except (ValueError, KeyError, TypeError) as exc:
-        raise ValueError("Malformed payment message payload") from exc
-    return process_payment(db, settings, payment_id)
+        payload = json.loads(message["payload"] or "{}")
+    except (ValueError, TypeError) as exc:
+        raise ValueError("Malformed queue message payload") from exc
+
+    if message_type == queue.PAYMENT_PROCESS:
+        payment_id = payload.get("payment_id")
+        if not payment_id:
+            raise ValueError("Malformed payment message payload")
+        return process_payment(db, settings, payment_id)
+
+    if message_type == queue.AUTOMATION_EVALUATE:
+        from .automations import evaluate_event
+
+        return f"automation:{evaluate_event(db, settings, payload['event_id'])}"
+
+    if message_type == queue.RECOMPUTE_SEGMENTS:
+        from .crm import recompute_segments
+
+        changed = recompute_segments(db)
+        return f"segments:{changed}"
+
+    if message_type == queue.RAG_INDEX:
+        from .rag import index_source
+
+        return f"rag:{index_source(db, settings, payload['source_type'], payload['source_ref'])}"
+
+    raise ValueError(f"Unsupported message type: {message_type}")
 
 
 def run_once(db: Any, settings: Settings, *, limit: int | None = None) -> dict[str, int]:

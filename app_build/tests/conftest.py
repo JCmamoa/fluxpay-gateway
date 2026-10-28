@@ -33,6 +33,9 @@ def build_settings(tmp_path: Path, **overrides) -> Settings:
         webhook_secret="whsec_test_secret_123456",
         webhook_url="http://127.0.0.1:9/demo/webhook-receiver?endpoint=whe_demo",
         worker_enabled=False,
+        # v0.3 deviation: unit tests run the worker manually (run_once), so the
+        # event hub must not enqueue consumer messages behind their back.
+        event_fanout=False,
         webhook_retry_schedule=(0.0, 0.0, 0.0),
         webhook_max_attempts=3,
         webhook_jitter_ratio=0.0,

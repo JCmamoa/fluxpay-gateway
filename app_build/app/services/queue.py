@@ -21,6 +21,9 @@ from ..utils import canonical_json, iso_after, iso_now, truncate
 logger = logging.getLogger("app.queue")
 
 PAYMENT_PROCESS = "payment.process"
+AUTOMATION_EVALUATE = "automation.evaluate"
+RAG_INDEX = "rag.index"
+RECOMPUTE_SEGMENTS = "crm.recompute_segments"
 
 
 def enqueue(

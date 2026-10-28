@@ -291,11 +291,15 @@ async function connect({ silent = false } = {}) {
     if (!silent) toast("Conectado", `Merchant ${me.name} autenticado.`, "success", 3000);
     startPolling();
     await refresh(true);
+    // Live panels: WebSocket stream + tab modules (v0.3).
+    if (window.fluxpayWS) window.fluxpayWS.connect(key);
+    if (window.fluxpayData) window.fluxpayData.snapshoot();
     return true;
   } catch (error) {
     state.connected = false;
     dot.dataset.state = "error";
     dot.title = "Falha na autenticação";
+    if (window.fluxpayWS) window.fluxpayWS.disconnect();
     if (!silent || error.status === 401) {
       toast("Não foi possível conectar", errorMessage(error), "error");
     }
@@ -345,6 +349,7 @@ async function refresh(quiet = false) {
     if (error.status === 401) {
       state.connected = false;
       $("#conn-dot").dataset.state = "error";
+      if (window.fluxpayWS) window.fluxpayWS.disconnect();
       if (!state.authErrorShown) {
         state.authErrorShown = true;
         toast("Sessão inválida", "A API key foi recusada. Conecte novamente.", "error");
@@ -1034,6 +1039,7 @@ function closeDeliveryModal() {
 async function init() {
   bindEvents();
   setMethod("pix");
+  bindTabNavigation();
   if (state.apiKey) $("#api-key").value = state.apiKey;
   const cents = centsFromInput($("#amount").value);
   if (Number.isFinite(cents)) $("#amount-cents").textContent = `= ${cents} centavos`;
@@ -1050,3 +1056,40 @@ async function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
+/* ------------------------------------------------------------------ */
+/* Tab navigation (v0.3): Gateway | Dashboard | CRM | Automações | ... */
+/* ------------------------------------------------------------------ */
+function bindTabNavigation() {
+  const tabs = document.querySelectorAll(".tab[data-page]");
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => activateTab(tab.dataset.page));
+  });
+}
+
+function activateTab(pageName) {
+  if (!pageName) return;
+  document.querySelectorAll(".tab[data-page]").forEach((tab) => {
+    const active = tab.dataset.page === pageName;
+    tab.classList.toggle("is-active", active);
+    tab.setAttribute("aria-selected", active ? "true" : "false");
+  });
+  document.querySelectorAll(".page[data-page]").forEach((page) => {
+    const active = page.dataset.page === pageName;
+    page.classList.toggle("is-active", active);
+    page.hidden = !active;
+  });
+  onTabActivated(pageName);
+}
+
+function onTabActivated(pageName) {
+  const modules = {
+    dashboard: () => window.fluxpayDashboard && window.fluxpayDashboard.refresh(true),
+    crm: () => window.fluxpayCrm && window.fluxpayCrm.loadCustomers(),
+    automations: () => window.fluxpayAutomations && (window.fluxpayAutomations.loadRules(), window.fluxpayAutomations.loadRuns()),
+    agent: () => {},
+    data: () => window.fluxpayData && (window.fluxpayData.loadDaily(), window.fluxpayData.snapshoot()),
+  };
+  const loader = modules[pageName];
+  if (loader) Promise.resolve(loader()).catch(() => { /* panels retry later */ });
+}

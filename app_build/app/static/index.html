@@ -9,6 +9,14 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/static/styles.css" />
   <script src="/static/app.js" defer></script>
+  <script src="/static/vendor/chart.umd.js" defer></script>
+  <script src="/static/theme.js" defer></script>
+  <script src="/static/ws.js" defer></script>
+  <script src="/static/dashboard.js" defer></script>
+  <script src="/static/crm.js" defer></script>
+  <script src="/static/automations.js" defer></script>
+  <script src="/static/agent.js" defer></script>
+  <script src="/static/data.js" defer></script>
 </head>
 <body>
   <div class="backdrop-grid" aria-hidden="true"></div>
@@ -35,6 +43,14 @@
         <button class="btn btn-small" type="button" id="connect-btn">Conectar</button>
       </div>
       <span class="env-badge" id="env-badge"><span></span> demo</span>
+      <button class="icon-btn theme-toggle" id="theme-toggle" type="button" title="Alternar tema claro/escuro" aria-label="Alternar tema claro/escuro">
+        <span class="theme-icon theme-icon-sun" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.2 5.2l1.8 1.8M17 17l1.8 1.8M18.8 5.2 17 7M7 17l-1.8 1.8" stroke-linecap="round"/></svg>
+        </span>
+        <span class="theme-icon theme-icon-moon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" stroke-linejoin="round"/></svg>
+        </span>
+      </button>
       <a class="icon-link" href="/docs" target="_blank" rel="noreferrer" title="OpenAPI docs" aria-label="Abrir documentação OpenAPI">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
           <path d="M14 3h7v7M21 3l-9 9M10 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -44,6 +60,34 @@
   </header>
 
   <main class="shell">
+    <nav class="tabs" id="console-tabs" role="tablist" aria-label="Áreas do console">
+      <button class="tab is-active" type="button" role="tab" aria-selected="true" data-page="gateway" id="tab-gateway" aria-controls="page-gateway">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m12 3 4.2 4.2L12 11.4 7.8 7.2 12 3Zm0 18 4.2-4.2L12 12.6l-4.2 4.2L12 21ZM3 12l4.2-4.2L11.4 12l-4.2 4.2L3 12Zm18 0-4.2-4.2L12.6 12l4.2 4.2L21 12Z" stroke-linejoin="round"/></svg>
+        Gateway
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" data-page="dashboard" id="tab-dashboard" aria-controls="page-dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15v-4M12 15V8m4 7v-6" stroke-linecap="round"/></svg>
+        Dashboard
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" data-page="crm" id="tab-crm" aria-controls="page-crm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M2.8 19.5c.8-3.1 3.2-5 6.2-5s5.4 1.9 6.2 5M17 8h4M17 11.5h3.8" stroke-linecap="round"/></svg>
+        CRM
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" data-page="automations" id="tab-automations" aria-controls="page-automations">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 7h10M4 12h16M4 17h7" stroke-linecap="round"/><circle cx="18" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></svg>
+        Automações
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" data-page="agent" id="tab-agent" aria-controls="page-agent">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="4.5" y="7" width="15" height="11" rx="2.5"/><path d="M12 7V4.5M9 12h.01M15 12h.01M9.5 15.5h5" stroke-linecap="round"/></svg>
+        Assistente
+      </button>
+      <button class="tab" type="button" role="tab" aria-selected="false" data-page="data" id="tab-data" aria-controls="page-data">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6v12c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3V6M4.5 12c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3" /></svg>
+        Dados
+      </button>
+    </nav>
+
+    <div class="page is-active" id="page-gateway" data-page="gateway">
     <section class="hero">
       <div class="hero-copy">
         <p class="eyebrow"><span class="pulse"></span> Processamento assíncrono · fila durável · webhooks assinados</p>
@@ -307,6 +351,207 @@
         </div>
       </div>
     </section>
+    </div>
+
+    <div class="page" id="page-dashboard" data-page="dashboard" hidden>
+      <header class="page-head">
+        <div>
+          <p class="kicker">Visão em tempo real</p>
+          <h2>Dashboard</h2>
+        </div>
+        <span class="live-tag"><span></span> atualiza ao vivo via WebSocket</span>
+      </header>
+
+      <div class="dash-grid">
+        <section class="panel dash-panel dash-kpis">
+          <div class="panel-head"><div><p class="kicker">Hoje</p><h3>Indicadores</h3></div></div>
+          <div class="dash-kpi-grid" id="dash-kpis">
+            <article class="stat"><span class="stat-label">Cobranças</span><strong class="stat-value" id="dash-attempts">—</strong><span class="stat-foot">tentativas de hoje</span></article>
+            <article class="stat"><span class="stat-label">Aprovados</span><strong class="stat-value" id="dash-approvals">—</strong><span class="stat-foot" id="dash-approval-rate">— de aprovação</span></article>
+            <article class="stat"><span class="stat-label">Receita</span><strong class="stat-value" id="dash-revenue">—</strong><span class="stat-foot">recebido hoje</span></article>
+            <article class="stat"><span class="stat-label">Pendentes</span><strong class="stat-value" id="dash-pending">—</strong><span class="stat-foot">aguardando captura</span></article>
+          </div>
+        </section>
+
+        <section class="panel dash-panel dash-chart-panel">
+          <div class="panel-head"><div><p class="kicker">Últimos 30 dias</p><h3>Volume diário (R$)</h3></div></div>
+          <div class="chart-wrap"><canvas id="chart-volume" height="280"></canvas></div>
+        </section>
+
+        <section class="panel dash-panel dash-chart-panel donut">
+          <div class="panel-head"><div><p class="kicker">Hoje</p><h3>Mix por método</h3></div></div>
+          <div class="chart-wrap"><canvas id="chart-mix" height="280"></canvas></div>
+        </section>
+
+        <section class="panel dash-panel dash-chart-panel bars">
+          <div class="panel-head"><div><p class="kicker">Últimos 7 dias</p><h3>Aprovados × Falhas</h3></div></div>
+          <div class="chart-wrap"><canvas id="chart-approval" height="280"></canvas></div>
+        </section>
+
+        <section class="panel dash-panel dash-ops">
+          <div class="panel-head"><div><p class="kicker">Operação</p><h3>Fila &amp; webhooks</h3></div></div>
+          <div class="mini-stats dash-mini" id="dash-queue">
+            <span class="stat"><span class="stat-label">Fila pendente</span><strong id="dash-queue-pending">0</strong></span>
+            <span class="stat"><span class="stat-label">Processando</span><strong id="dash-queue-processing">0</strong></span>
+            <span class="stat"><span class="stat-label">Mensagens done</span><strong id="dash-queue-done">0</strong></span>
+            <span class="stat"><span class="stat-label">Falhas fila</span><strong id="dash-queue-failed">0</strong></span>
+          </div>
+          <div class="mini-stats dash-mini" id="dash-deliveries">
+            <span class="stat"><span class="stat-label">Webhook entregue</span><strong id="dash-delivered">0</strong></span>
+            <span class="stat"><span class="stat-label">Webhook pendente</span><strong id="dash-delivery-pending">0</strong></span>
+            <span class="stat"><span class="stat-label">Webhook na DLQ</span><strong id="dash-dlq">0</strong></span>
+          </div>
+          <div class="dash-list">
+            <h4>Motivos de falha (7d)</h4>
+            <ul id="dash-failure-reasons"></ul>
+            <h4>Top clientes (30d)</h4>
+            <ul id="dash-top-customers"></ul>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="page" id="page-crm" data-page="crm" hidden>
+      <header class="page-head">
+        <div>
+          <p class="kicker">Clientes &amp; 360°</p>
+          <h2>CRM</h2>
+        </div>
+        <button class="btn btn-small btn-ghost" type="button" id="crm-refresh-btn">Atualizar clientes</button>
+      </header>
+      <div class="crm-grid">
+        <section class="panel crm-panel crm-list-panel">
+          <div class="panel-head"><div><p class="kicker">E-mail é a chave natural (case-insensitive, sem duplicar)</p><h3>Clientes</h3></div></div>
+          <div class="crm-filters">
+            <input id="crm-search" class="key-input" type="search" placeholder="Buscar por e-mail ou nome" aria-label="Buscar clientes" />
+            <input id="crm-tag-filter" class="key-input" type="search" placeholder="Filtrar por tag" aria-label="Filtrar por tag" />
+            <button class="btn btn-small" type="button" id="crm-apply-filters">Aplicar</button>
+          </div>
+          <div class="crm-table" id="crm-table">
+            <div class="table-head"><span>Cliente</span><span>Pagamentos</span><span>Volume</span><span>Tags</span><span>Segmentos</span></div>
+            <div id="crm-rows"><div class="empty-state compact"><strong>Sem clientes</strong><span>Crie um pagamento com customer.email no Gateway.</span></div></div>
+          </div>
+        </section>
+        <section class="panel crm-panel crm-detail-panel" aria-live="polite">
+          <div class="panel-head"><div><p class="kicker">Visão 360°</p><h3 id="crm-detail-title">Selecione um cliente</h3></div></div>
+          <div class="crm-detail" id="crm-detail"><div class="empty-state compact"><strong>Nada selecionado</strong><span>Clique em um cliente para ver o histórico completo.</span></div></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="page" id="page-automations" data-page="automations" hidden>
+      <header class="page-head">
+        <div>
+          <p class="kicker">Regras por evento + fila durável</p>
+          <h2>Automações</h2>
+        </div>
+        <button class="btn btn-small btn-ghost" type="button" id="aut-refresh-btn">Atualizar</button>
+      </header>
+      <div class="aut-grid">
+        <section class="panel aut-panel">
+          <div class="panel-head"><div><p class="kicker">Catálogo</p><h3>Regras</h3></div></div>
+          <div class="rules-list" id="rules-list"><div class="empty-state compact"><strong>Nenhuma regra</strong><span>Uma regra exemplo (webhook falha → alerta) já vem semeada.</span></div></div>
+          <form id="rule-form" class="rule-form" novalidate>
+            <h4>Criar nova regra</h4>
+            <div class="field"><label for="rule-name">Nome</label><input id="rule-name" class="key-input" required minlength="3" placeholder="ex.: falha pix → tag atencao" /></div>
+            <div class="field-row">
+              <div class="field"><label for="rule-event">Event type</label>
+                <select id="rule-event" class="select">
+                  <option value="webhook.failed">webhook.failed</option>
+                  <option value="payment.succeeded">payment.succeeded</option>
+                  <option value="payment.failed">payment.failed</option>
+                  <option value="crm.customer.activated">crm.customer.activated</option>
+                  <option value="payment.*">payment.* (wildcard)</option>
+                </select>
+              </div>
+              <div class="field"><label for="rule-action">Ação</label>
+                <select id="rule-action" class="select">
+                  <option value="alerta_no_console">alerta_no_console</option>
+                  <option value="tag_customer">tag_customer</option>
+                  <option value="retry_webhook">retry_webhook</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field field-grow"><label for="rule-message">Mensagem do alerta (placeholders {payment_id} {attempts})</label><input id="rule-message" class="key-input" placeholder="Falha detectada em {payment_id}" /></div>
+              <div class="field"><label for="rule-tag">Tag (para tag_customer)</label><input id="rule-tag" class="key-input" placeholder="atencao" /></div>
+            </div>
+            <button class="btn btn-primary" type="submit">Criar regra</button>
+          </form>
+        </section>
+
+        <section class="panel aut-panel">
+          <div class="panel-head"><div><p class="kicker">Auditoria append-only</p><h3>Execuções</h3></div></div>
+          <div class="runs-list" id="runs-list"><div class="empty-state compact"><strong>Sem execuções</strong><span>Dispare um evento que case com alguma regra.</span></div></div>
+          <div class="panel-head" style="margin-top:18px"><div><p class="kicker">Tempo real (WS)</p><h3>Alertas</h3></div></div>
+          <div class="alert-list" id="alert-list" aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+
+    <div class="page" id="page-agent" data-page="agent" hidden>
+      <header class="page-head">
+        <div>
+          <p class="kicker">Grounded · read-only · PII mínimo · 2-step confirm</p>
+          <h2>Assistente IA</h2>
+        </div>
+        <span class="badge badge-neutral" id="agent-engine-badge">sem LLM configurado → modo local</span>
+      </header>
+      <div class="agent-grid">
+        <section class="panel agent-panel">
+          <div class="chat-log" id="chat-log" aria-live="polite">
+            <div class="chat-bubble chat-system">
+              Pergunte por métricas ("quantos PIX aprovados hoje?"), clientes, pagamentos ou automações.
+              Ações sensíveis (criar nota, reenviar webhook) exigem <strong>confirmação explícita</strong>.
+            </div>
+          </div>
+          <form id="chat-form" class="chat-form" novalidate>
+            <input id="chat-input" class="key-input" type="text" autocomplete="off" placeholder="Ex.: quantos PIX aprovados hoje?" aria-label="Pergunta para o assistente" />
+            <button class="btn btn-primary" type="submit" id="chat-send">Enviar</button>
+          </form>
+        </section>
+        <section class="panel agent-side">
+          <div class="panel-head"><div><p class="kicker">Ação pendente</p><h3>Confirmação</h3></div></div>
+          <div id="agent-pending" class="agent-pending"><div class="empty-state compact"><strong>Nenhuma ação pendente</strong><span>Ex.: "adicione uma nota para ana@exemplo.com: 'VIP'"</span></div></div>
+          <div class="panel-head" style="margin-top:18px"><div><p class="kicker">Histórico recente</p><h3>Respostas</h3></div></div>
+          <ul class="agent-history" id="agent-history"></ul>
+        </section>
+      </div>
+    </div>
+
+    <div class="page" id="page-data" data-page="data" hidden>
+      <header class="page-head">
+        <div>
+          <p class="kicker">Hub de eventos · rollups · exports CSV</p>
+          <h2>Dados</h2>
+        </div>
+        <span class="live-tag"><span></span> feed ao vivo</span>
+      </header>
+      <div class="data-grid">
+        <section class="panel data-panel">
+          <div class="panel-head">
+            <div><p class="kicker">analytics_daily (rollup idempotente)</p><h3>Consolidação diária</h3></div>
+            <button class="btn btn-small btn-ghost" type="button" id="data-refresh-btn">Atualizar</button>
+          </div>
+          <div class="data-table">
+            <div class="table-head"><span>Dia</span><span>Método</span><span>Tentativas</span><span>Aprovados</span><span>Falhas</span><span>Volume</span><span>Taxa</span></div>
+            <div id="daily-rows"><div class="empty-state compact"><strong>Sem rollups</strong><span>Os jobs agendados consolidam a cada 3 min (ou execute manualmente).</span></div></div>
+          </div>
+        </section>
+
+        <section class="panel data-panel">
+          <div class="panel-head"><div><p class="kicker">Exportação streaming</p><h3>CSV</h3></div></div>
+          <div class="export-row">
+            <a class="btn btn-ghost" id="export-payments-btn" href="/v1/data/exports/payments" download>Exportar pagamentos</a>
+            <a class="btn btn-ghost" id="export-customers-btn" href="/v1/data/exports/customers" download>Exportar clientes</a>
+            <button class="btn btn-small" type="button" id="data-reindex-btn">Reindexar RAG</button>
+          </div>
+          <small class="field-note">Valores em centavos inteiros; ordem determinística por (created_at, id).</small>
+          <div class="panel-head" style="margin-top:18px"><div><p class="kicker">Hub de eventos (append-only)</p><h3>Eventos recentes</h3></div></div>
+          <div class="event-feed" id="event-feed" aria-live="polite"><div class="empty-state compact"><strong>Feed vazio</strong><span>Conecte-se no Gateway para começar a receber eventos.</span></div></div>
+        </section>
+      </div>
+    </div>
 
     <footer class="footer">
       <div>

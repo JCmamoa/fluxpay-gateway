@@ -30,6 +30,29 @@ services:
       PIX_EXPIRES_MINUTES: ${PIX_EXPIRES_MINUTES:-30}
       CARD_AUTHORIZATION_DELAY_MS: ${CARD_AUTHORIZATION_DELAY_MS:-350}
       WORKER_ENABLED: "true"
+      # ---- v0.3: event hub, realtime and scheduled jobs ----
+      EVENT_FANOUT: "true"
+      WS_ENABLED: "true"
+      WS_POLL_SECONDS: ${WS_POLL_SECONDS:-0.15}
+      WS_HEARTBEAT_SECONDS: ${WS_HEARTBEAT_SECONDS:-20}
+      EVENT_STREAM_RETENTION_DAYS: ${EVENT_STREAM_RETENTION_DAYS:-30}
+      JOBS_SEGMENTS_SECONDS: ${JOBS_SEGMENTS_SECONDS:-60}
+      JOBS_ANALYTICS_SECONDS: ${JOBS_ANALYTICS_SECONDS:-180}
+      JOBS_RAG_SECONDS: ${JOBS_RAG_SECONDS:-300}
+      JOBS_RETENTION_SECONDS: ${JOBS_RETENTION_SECONDS:-900}
+      ANALYTICS_ROLLUP_DAYS: ${ANALYTICS_ROLLUP_DAYS:-92}
+      RAG_ENABLED: "true"
+      # The image ships RAG with the in-app README + event feeds. To index the
+      # project specs too, bind-mount them and set RAG_SPECS_DIR, e.g.:
+      #   volumes: ["./specs:/app/specs:ro"]
+      #   environment: RAG_SPECS_DIR: /app/specs
+      # (RAG degrades gracefully when the dir is absent.)
+      AGENT_RATE_LIMIT_PER_MINUTE: ${AGENT_RATE_LIMIT_PER_MINUTE:-30}
+      AGENT_CONFIRM_TTL_SECONDS: ${AGENT_CONFIRM_TTL_SECONDS:-600}
+      PII_REDACT_EMAIL: ${PII_REDACT_EMAIL:-0}
+      OPENAI_COMPATIBLE_BASE_URL: ${OPENAI_COMPATIBLE_BASE_URL:-}
+      OPENAI_COMPATIBLE_API_KEY: ${OPENAI_COMPATIBLE_API_KEY:-}
+      OPENAI_COMPATIBLE_MODEL: ${OPENAI_COMPATIBLE_MODEL:-}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     volumes:
       - gateway_data:/app/data

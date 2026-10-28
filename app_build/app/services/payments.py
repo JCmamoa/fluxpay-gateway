@@ -114,6 +114,10 @@ def create_payment(
             )
 
         card = payload.card
+        if payload.customer:
+            from .crm import ensure_customer
+
+            ensure_customer(conn, payload.customer.email, payload.customer.name, fanout=settings.event_fanout)
         conn.execute(
             """
             INSERT INTO payments(

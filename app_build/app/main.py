@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import re
 import sqlite3
@@ -18,15 +19,24 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from . import __version__
+from .api import agent as agent_api
+from .api import analytics as analytics_api
+from .api import automations as automations_api
+from .api import crm as crm_api
+from .api import data as data_api
 from .api import demo as demo_api
+from .api import events_api
 from .api import payments as payments_api
+from .api import rag as rag_api
 from .api import system as system_api
 from .api import webhooks as webhooks_api
 from .config import Settings
 from .db import Database
 from .errors import ApiError
 from .logging_setup import configure_logging, request_id_var
-from .services import dispatcher, queue, worker
+from .services import dispatcher, jobs, queue, worker
+from .services import ws as ws_service
+from .services.automations import seed_example_rules
 from .services.seed import seed_merchant_and_endpoint
 from .utils import new_id
 
@@ -55,6 +65,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         settings.validate()
         db.init_schema()
         seed_merchant_and_endpoint(db, settings)
+        with db.transaction() as conn:
+            seed_example_rules(conn)
         queue.recover_inflight(db)
 
         stop_event = threading.Event()
@@ -72,7 +84,25 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 )
                 thread.start()
                 threads.append(thread)
+        if settings.jobs_active:
+            jobs_thread = threading.Thread(
+                target=jobs.run_forever,
+                args=(db, settings, stop_event),
+                name="maintenance-jobs",
+                daemon=True,
+            )
+            jobs_thread.start()
+            threads.append(jobs_thread)
         app.state.stop_event = stop_event
+
+        # Realtime WS broadcaster (asyncio task on the request loop).
+        registry = ws_service.ConnectionRegistry()
+        broadcaster = ws_service.Broadcaster(db, settings, registry)
+        app.state.ws_registry = registry
+        app.state.ws_broadcaster = broadcaster
+        if settings.ws_enabled:
+            broadcaster.start()
+
         logger.info(
             "gateway ready",
             extra={"path": str(settings.database_path)},
@@ -81,6 +111,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         try:
             yield
         finally:
+            if settings.ws_enabled:
+                await broadcaster.stop()
             stop_event.set()
             for thread in threads:
                 thread.join(timeout=10)
@@ -218,6 +250,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(payments_api.router)
     app.include_router(webhooks_api.router)
     app.include_router(system_api.router)
+    app.include_router(crm_api.router)
+    app.include_router(automations_api.router)
+    app.include_router(analytics_api.router)
+    app.include_router(data_api.router)
+    app.include_router(agent_api.router)
+    app.include_router(rag_api.router)
+    app.include_router(events_api.router)
     if settings.demo_mode:
         app.include_router(demo_api.router)
 
