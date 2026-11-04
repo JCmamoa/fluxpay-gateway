@@ -71,6 +71,7 @@ export default function (data) {
   const res = http.post(`${BASE_URL}/api/payments`, payload, {
     headers: {
       'Content-Type': 'application/json',
+      'Idempotency-Key': `load-${__VU}-${__ITER}`,
       Authorization: `Bearer ${data.token}`,
     },
   });

@@ -1,14 +1,17 @@
 package com.paygateway.gateway;
 
 import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Profile;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Component
-public class ExternalGatewayClient {
+@Profile({"dev", "test"})
+public class ExternalGatewayClient implements PaymentGateway {
 
+    @Override
     public Mono<Boolean> processPrimary(String transactionId) {
         return Mono.fromSupplier(() -> {
                     if (ThreadLocalRandom.current().nextInt(100) < 20) {
@@ -19,6 +22,7 @@ public class ExternalGatewayClient {
                 .delayElement(Duration.ofMillis(simulatedLatency()));
     }
 
+    @Override
     public Mono<Boolean> processFallback(String transactionId) {
         return Mono.just(true)
                 .delayElement(Duration.ofMillis(ThreadLocalRandom.current().nextInt(50, 300)));

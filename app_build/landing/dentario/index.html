@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odonto Prime | Consultório Odontológico</title>
+<meta name="description" content="Consultório odontológico completo: clareamento, implantes, ortodontia e odontopediatria. Agende online.">
+<meta property="og:title" content="Odonto Prime">
+<meta property="og:description" content="Sorrisos saudáveis com tecnologia e cuidado.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+(function(){var s=null;try{s=localStorage.getItem('lp-theme');}catch(e){}var d=window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',s||(d?'dark':'light'));})();
+</script>
+<style>
+:root{
+  --bg:#ffffff;--bg-2:#f0fdfa;--surface:#ffffff;--text:#0f172a;--text-muted:#475569;
+  --primary:#0f766e;--accent:#14b8a6;--accent-2:#0d9488;--border:#ccfbf1;
+  --shadow:0 6px 24px rgba(15,118,110,.08);--radius:12px;--max:1180px;
+}
+[data-theme="dark"]{
+  --bg:#0a1f1d;--bg-2:#0f2926;--surface:#13332f;--text:#e6f4f1;--text-muted:#9cc9c2;
+  --primary:#2dd4bf;--accent:#5eead4;--accent-2:#2dd4bf;--border:#1f4a45;
+  --shadow:0 6px 24px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+.container{max-width:var(--max);margin:0 auto;padding:0 20px}
+h1,h2,h3{font-weight:700;line-height:1.2}
+.skip{position:absolute;left:-9999px;top:0;background:var(--accent);color:#fff;padding:8px 12px;z-index:1000}
+.skip:focus{left:8px;top:8px}
+
+header.site{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--border)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:16px}
+.logo{font-size:1.4rem;font-weight:800;color:var(--primary)}
+.logo span{color:var(--accent)}
+nav.main{display:flex;gap:22px}
+nav.main a{font-size:.95rem;font-weight:500;opacity:.8}
+nav.main a:hover{opacity:1;color:var(--accent)}
+.header-actions{display:flex;align-items:center;gap:12px}
+.theme-btn{background:var(--bg-2);border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:10px;cursor:pointer;display:grid;place-items:center}
+.hamburger{display:none;background:none;border:none;color:var(--text);cursor:pointer}
+.mobile-menu{display:none;flex-direction:column;gap:10px;padding:12px 20px 20px;border-top:1px solid var(--border)}
+.mobile-menu.open{display:flex}
+@media(max-width:768px){nav.main{display:none}.hamburger{display:block}}
+
+/* hero */
+.hero{padding:70px 0;background:var(--bg-2)}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(2rem,4vw,3rem);margin-bottom:14px}
+.hero p{color:var(--text-muted);margin-bottom:24px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:10px;font-weight:600;border:2px solid transparent;cursor:pointer;transition:transform .15s,background .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-outline{background:transparent;border-color:var(--primary);color:var(--primary)}
+.hero-img{border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3;background:var(--bg)}
+.hero-img img{width:100%;height:100%;object-fit:cover}
+@media(max-width:768px){.hero-grid{grid-template-columns:1fr}.hero-img{order:-1}}
+
+/* services icons */
+.services{padding:70px 0}
+.service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.service{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;text-align:center;transition:transform .2s}
+.service:hover{transform:translateY(-4px)}
+.service-icon{width:64px;height:64px;border-radius:50%;background:var(--bg-2);color:var(--primary);display:grid;place-items:center;margin:0 auto 12px}
+.service h3{font-size:1rem;margin-bottom:6px}
+.service p{color:var(--text-muted);font-size:.85rem}
+@media(max-width:900px){.service-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.service-grid{grid-template-columns:1fr}}
+
+/* doctors */
+.doctors{padding:70px 0;background:var(--bg-2)}
+.doctor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.doctor{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;text-align:center}
+.doctor img{width:100%;height:240px;object-fit:cover}
+.doctor-body{padding:18px}
+.doctor-body h3{font-size:1.1rem}
+.doctor-body p{color:var(--text-muted);font-size:.85rem}
+@media(max-width:768px){.doctor-grid{grid-template-columns:1fr}}
+
+/* insurance */
+.insurance{padding:60px 0}
+.ins-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.ins{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:center;font-weight:600;color:var(--primary)}
+@media(max-width:768px){.ins-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* booking */
+.booking{padding:70px 0;background:var(--bg-2)}
+.booking-wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.booking-form input,.booking-form select,.booking-form textarea{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;margin-bottom:12px}
+.booking-form input:focus,.booking-form select:focus,.booking-form textarea:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+.booking-form button{width:100%}
+.booking-info h3{margin-bottom:10px}
+.booking-info p{color:var(--text-muted);margin-bottom:8px;font-size:.95rem}
+@media(max-width:768px){.booking-wrap{grid-template-columns:1fr}}
+
+/* testimonials */
+.testi{padding:60px 0}
+.carousel{position:relative;max-width:700px;margin:0 auto}
+.slides{position:relative;min-height:150px}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity .5s;text-align:center;padding:16px}
+.slide.active{opacity:1;position:relative}
+.slide p{font-style:italic;margin-bottom:10px}
+.slide .author{font-weight:600;color:var(--primary)}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:12px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:none;cursor:pointer}
+.dot.active{background:var(--accent)}
+
+/* differentials */
+.diff{padding:60px 0;background:var(--bg-2)}
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.diff-item{display:flex;gap:12px;align-items:flex-start}
+.diff-icon{flex:0 0 44px;height:44px;border-radius:10px;background:var(--primary);color:#fff;display:grid;place-items:center}
+.diff-item h3{font-size:1rem;margin-bottom:4px}
+.diff-item p{color:var(--text-muted);font-size:.85rem}
+@media(max-width:768px){.diff-grid{grid-template-columns:1fr}}
+
+footer.site{background:var(--bg-2);border-top:1px solid var(--border);padding:48px 0 24px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px}
+@media(max-width:768px){.footer-grid{grid-template-columns:1fr}}
+.footer-grid h4{margin-bottom:12px;color:var(--primary)}
+.footer-grid ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-grid a{color:var(--text-muted);font-size:.9rem}
+.socials{display:flex;gap:10px;margin-top:14px}
+.socials a{width:36px;height:36px;border-radius:8px;background:var(--bg);border:1px solid var(--border);display:grid;place-items:center;color:var(--text-muted)}
+.socials a:hover{color:#fff;background:var(--primary)}
+.footer-bottom{margin-top:28px;padding-top:14px;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:#fff;padding:14px 20px;border-radius:10px;box-shadow:var(--shadow);transform:translateY(120%);transition:transform .3s;z-index:100}
+.toast.show{transform:translateY(0)}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,.dot:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<header class="site">
+  <div class="container header-inner">
+    <a href="#" class="logo">Odonto<span>Prime</span></a>
+    <nav class="main" aria-label="Principal">
+      <a href="#servicos">Serviços</a>
+      <a href="#equipe">Equipe</a>
+      <a href="#planos">Planos</a>
+      <a href="#agendar">Agendar</a>
+    </nav>
+    <div class="header-actions">
+      <div class="socials">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a href="https://wa.me/5511977777777" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+      </div>
+      <button type="button" class="theme-btn" id="themeBtn" aria-label="Alternar tema"><svg id="themeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button type="button" class="hamburger" id="hamburger" aria-label="Menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#servicos">Serviços</a><a href="#equipe">Equipe</a><a href="#planos">Planos</a><a href="#agendar">Agendar</a>
+  </div>
+</header>
+
+<main id="conteudo">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <h1>Sorrisos saudáveis com tecnologia e cuidado</h1>
+        <p>Consultório odontológico completo: prevenção, estética e reabilitação. Agende sua consulta online em minutos.</p>
+        <div class="hero-cta">
+          <a href="#agendar" class="btn btn-primary">Agendar consulta</a>
+          <a href="#servicos" class="btn btn-outline">Nossos serviços</a>
+        </div>
+      </div>
+      <div class="hero-img"><img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=900&q=80" alt="Consultório odontológico moderno" loading="eager"></div>
+    </div>
+  </section>
+
+  <section id="servicos" class="services">
+    <div class="container">
+      <div class="section-title" style="text-align:center;margin-bottom:40px">
+        <h2 style="font-size:clamp(1.6rem,3vw,2.3rem)">Serviços</h2>
+        <p style="color:var(--text-muted)">Tratamentos completos para toda a família.</p>
+      </div>
+      <div class="service-grid">
+        <div class="service"><div class="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg></div><h3>Clareamento</h3><p>Dentes mais brancos em poucas sessões.</p></div>
+        <div class="service"><div class="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg></div><h3>Implantes</h3><p>Reabilitação com implantes de titânio.</p></div>
+        <div class="service"><div class="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/></svg></div><h3>Ortodontia</h3><p>Aparelhos fixos e alinhadores invisíveis.</p></div>
+        <div class="service"><div class="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div><h3>Odontopediatria</h3><p>Cuidado especial para crianças.</p></div>
+        <div class="service"><div class="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><h3>Prótese</h3><p>Coroas e próteses de alta qualidade.</p></div>
+        <div class="service"><div class="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><h3>Canal</h3><p>Tratamento endodôntico indolor.</p></div>
+        <div class="service"><div class="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>Prevenção</h3><p>Limpeza e check-up semestral.</p></div>
+        <div class="service"><div class="service-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3>Estética</h3><p>Lentes de contato e facetas.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="equipe" class="doctors">
+    <div class="container">
+      <div class="section-title" style="text-align:center;margin-bottom:40px">
+        <h2 style="font-size:clamp(1.6rem,3vw,2.3rem)">Nossa Equipe</h2>
+      </div>
+      <div class="doctor-grid">
+        <div class="doctor">
+          <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=500&q=80" alt="Dr. Rafael" loading="lazy">
+          <div class="doctor-body"><h3>Dr. Rafael Souza</h3><p>Cirurgião-dentista • CRO 12345</p></div>
+        </div>
+        <div class="doctor">
+          <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500&q=80" alt="Dra. Beatriz" loading="lazy">
+          <div class="doctor-body"><h3>Dra. Beatriz Lima</h3><p>Ortodontista • CRO 23456</p></div>
+        </div>
+        <div class="doctor">
+          <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=500&q=80" alt="Dra. Helena" loading="lazy">
+          <div class="doctor-body"><h3>Dra. Helena Costa</h3><p>Odontopediatra • CRO 34567</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="planos" class="insurance">
+    <div class="container">
+      <div class="section-title" style="text-align:center;margin-bottom:30px">
+        <h2 style="font-size:clamp(1.6rem,3vw,2.3rem)">Convênios e Planos</h2>
+        <p style="color:var(--text-muted)">Atendemos os principais planos odontológicos.</p>
+      </div>
+      <div class="ins-grid">
+        <div class="ins">Amil Dental</div>
+        <div class="ins">Bradesco Dental</div>
+        <div class="ins">SulAmérica</div>
+        <div class="ins">Unimed</div>
+        <div class="ins">Odontoprev</div>
+        <div class="ins">Porto Seguro</div>
+        <div class="ins">MetLife</div>
+        <div class="ins">Particular</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="diff">
+    <div class="container">
+      <div class="section-title" style="text-align:center;margin-bottom:30px">
+        <h2 style="font-size:clamp(1.6rem,3vw,2.3rem)">Diferenciais</h2>
+      </div>
+      <div class="diff-grid">
+        <div class="diff-item"><div class="diff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><h3>Biossegurança</h3><p>Protocolos rigorosos de esterilização.</p></div></div>
+        <div class="diff-item"><div class="diff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div><h3>Pontualidade</h3><p>Consultas no horário marcado.</p></div></div>
+        <div class="diff-item"><div class="diff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><h3>Atendimento</h3><p>Equipe acolhedora e empática.</p></div></div>
+        <div class="diff-item"><div class="diff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><h3>Tecnologia</h3><p>Radiografia digital e scanners 3D.</p></div></div>
+        <div class="diff-item"><div class="diff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div><h3>Preços justos</h3><p>Orçamentos transparentes e parcelados.</p></div></div>
+        <div class="diff-item"><div class="diff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><h3>Família</h3><p>Atendimento para todas as idades.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="testi">
+    <div class="container">
+      <div class="section-title" style="text-align:center;margin-bottom:30px">
+        <h2 style="font-size:clamp(1.6rem,3vw,2.3rem)">Depoimentos</h2>
+      </div>
+      <div class="carousel" id="carousel">
+        <div class="slides">
+          <div class="slide active"><p>"Meu medo de dentista acabou. Equipe maravilhosa e atendimento sem dor."</p><span class="author">— Renata F.</span></div>
+          <div class="slide"><p>"Implante perfeito, resultado natural. Super recomendo a Odonto Prime."</p><span class="author">— Marcos V.</span></div>
+          <div class="slide"><p>"Meus filhos adoram vir. Ambiente acolhedor e profissionais excelentes."</p><span class="author">— Camila T.</span></div>
+        </div>
+        <div class="dots" id="dots"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="agendar" class="booking">
+    <div class="container">
+      <div class="section-title" style="text-align:center;margin-bottom:40px">
+        <h2 style="font-size:clamp(1.6rem,3vw,2.3rem)">Agendamento Online</h2>
+      </div>
+      <div class="booking-wrap">
+        <form class="booking-form" id="bookingForm">
+          <input type="text" name="nome" placeholder="Nome completo" required>
+          <input type="tel" name="telefone" placeholder="Telefone" required>
+          <input type="email" name="email" placeholder="E-mail" required>
+          <select name="servico" required>
+            <option value="">Serviço desejado</option>
+            <option>Clareamento</option><option>Implante</option><option>Ortodontia</option><option>Limpeza</option><option>Canal</option><option>Estética</option>
+          </select>
+          <input type="date" name="data" required>
+          <input type="time" name="hora" required>
+          <button class="btn btn-primary" type="submit">Confirmar agendamento</button>
+        </form>
+        <div class="booking-info">
+          <h3>Informações</h3>
+          <p>📍 Av. Brasil, 450 - Centro</p>
+          <p>📞 (11) 97777-7777</p>
+          <p>🕐 Seg a Sex: 8h às 18h • Sáb: 8h às 13h</p>
+          <p>✉️ contato@odontoprime.com.br</p>
+          <p style="margin-top:16px;color:var(--text-muted);font-size:.9rem">Convênios aceitos. Orçamento sem compromisso.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="#" class="logo">Odonto<span>Prime</span></a>
+        <p style="color:var(--text-muted);margin-top:10px;font-size:.9rem">Consultório odontológico completo.</p>
+        <div class="socials">
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg></a>
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+          <a href="https://wa.me/5511977777777" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.063 2.063 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+        </div>
+      </div>
+      <div><h4>Links</h4><ul><li><a href="#servicos">Serviços</a></li><li><a href="#equipe">Equipe</a></li><li><a href="#planos">Planos</a></li><li><a href="#agendar">Agendar</a></li></ul></div>
+      <div><h4>Contato</h4><ul><li>Av. Brasil, 450</li><li>(11) 97777-7777</li><li>contato@odontoprime.com.br</li></ul></div>
+    </div>
+    <div class="footer-bottom">© 2026 Odonto Prime. Todos os direitos reservados.</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Agendamento confirmado!</div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var btn=document.getElementById('themeBtn');
+  var icon=document.getElementById('themeIcon');
+  function apply(t){root.setAttribute('data-theme',t);try{localStorage.setItem('lp-theme',t);}catch(e){};icon.innerHTML=t==='dark'?'<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>':'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';}
+  btn.addEventListener('click',function(){apply(root.getAttribute('data-theme')==='dark'?'light':'dark');});
+  apply(root.getAttribute('data-theme'));
+  var ham=document.getElementById('hamburger');var mm=document.getElementById('mobileMenu');
+  ham.addEventListener('click',function(){mm.classList.toggle('open');});
+mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){mm.classList.remove('open');});});
+  var slides=document.querySelectorAll('.slide');var dotsC=document.getElementById('dots');var idx=0;
+  slides.forEach(function(_,i){var d=document.createElement('button');d.className='dot'+(i===0?' active':'');d.addEventListener('click',function(){go(i);});dotsC.appendChild(d);});
+  function go(i){slides[idx].classList.remove('active');dotsC.children[idx].classList.remove('active');idx=i;slides[idx].classList.add('active');dotsC.children[idx].classList.add('active');}
+  setInterval(function(){go((idx+1)%slides.length);},5000);
+  var toast=document.getElementById('toast');
+  function showToast(m){toast.textContent=m;toast.classList.add('show');setTimeout(function(){toast.classList.remove('show');},3000);}
+  document.getElementById('bookingForm').addEventListener('submit',function(e){e.preventDefault();this.reset();showToast('Agendamento confirmado!');});
+})();
+</script>
+</body>
+</html>

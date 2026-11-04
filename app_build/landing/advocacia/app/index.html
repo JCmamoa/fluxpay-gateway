@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b1f3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Monteiro">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+
+<title>Monteiro & Associados | Advocacia e Consultoria Jurídica</title>
+<meta name="description" content="Escritório de advocacia com atuação em direito civil, trabalhista, tributário e empresarial. Consulta inicial gratuita.">
+<meta property="og:title" content="Monteiro & Associados | Advocacia">
+<meta property="og:description" content="Defendendo seus direitos com excelência e tradição.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+(function(){
+  var s=null;try{s=localStorage.getItem('lp-theme');}catch(e){}
+  var d=window.matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.setAttribute('data-theme', s || (d?'dark':'light'));
+})();
+</script>
+<style>
+:root{
+  --bg:#f7f5f0;--bg-2:#ffffff;--surface:#ffffff;--text:#0b1f3a;--text-muted:#4a5568;
+  --primary:#0b1f3a;--accent:#c9a227;--accent-2:#a8841f;--border:#e2ddd0;
+  --shadow:0 10px 30px rgba(11,31,58,.08);--hero-bg:linear-gradient(135deg,#0b1f3a 0%,#16335c 100%);
+  --hero-text:#f7f5f0;--radius:14px;--max:1200px;
+}
+[data-theme="dark"]{
+  --bg:#071326;--bg-2:#0b1f3a;--surface:#102443;--text:#f0e9d6;--text-muted:#b9c2d0;
+  --primary:#d9e2f3;--accent:#d4b03a;--accent-2:#c9a227;--border:#1e3a66;
+  --shadow:0 10px 30px rgba(0,0,0,.4);--hero-bg:linear-gradient(135deg,#040d1a 0%,#0b1f3a 100%);
+  --hero-text:#f0e9d6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+.container{max-width:var(--max);margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;line-height:1.2}
+.skip{position:absolute;left:-9999px;top:0;background:var(--accent);color:#000;padding:8px 12px;z-index:1000}
+.skip:focus{left:8px;top:8px}
+
+/* header */
+header.site{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--border);backdrop-filter:saturate(180%) blur(8px)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:16px}
+.logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--primary)}
+.logo span{color:var(--accent)}
+nav.main{display:flex;align-items:center;gap:22px}
+nav.main a{font-size:.95rem;font-weight:500;opacity:.85;transition:opacity .2s,color .2s}
+nav.main a:hover{opacity:1;color:var(--accent)}
+.header-actions{display:flex;align-items:center;gap:12px}
+.theme-btn{background:var(--bg-2);border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:50%;cursor:pointer;display:grid;place-items:center;transition:transform .2s}
+.theme-btn:hover{transform:rotate(20deg)}
+.hamburger{display:none;background:none;border:none;color:var(--text);cursor:pointer;padding:6px}
+.mobile-menu{display:none;flex-direction:column;gap:12px;padding:12px 20px 20px;border-top:1px solid var(--border)}
+.mobile-menu.open{display:flex}
+.mobile-menu a{padding:8px 0;font-weight:500}
+@media(max-width:768px){
+  nav.main{display:none}
+  .hamburger{display:block}
+}
+
+/* hero split */
+.hero{background:var(--hero-bg);color:var(--hero-text);padding:80px 0 60px}
+.hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(2rem,4vw,3.2rem);margin-bottom:16px}
+.hero p{opacity:.9;margin-bottom:24px;font-size:1.05rem}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:8px;font-weight:600;border:2px solid transparent;cursor:pointer;transition:transform .15s,background .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--accent);color:#0b1f3a}
+.btn-outline{background:transparent;border-color:var(--hero-text);color:var(--hero-text)}
+.hero-img{border-radius:var(--radius);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3);aspect-ratio:4/3;background:#0b1f3a}
+.hero-img img{width:100%;height:100%;object-fit:cover}
+@media(max-width:768px){.hero-grid{grid-template-columns:1fr}.hero-img{order:-1}}
+
+/* sections */
+section{padding:72px 0}
+.section-title{text-align:center;margin-bottom:40px}
+.section-title h2{font-size:clamp(1.6rem,3vw,2.4rem);margin-bottom:8px}
+.section-title p{color:var(--text-muted);max-width:640px;margin:0 auto}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);transition:transform .2s}
+.card:hover{transform:translateY(-4px)}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+@media(max-width:900px){.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid-3,.grid-2{grid-template-columns:1fr}}
+
+/* practice areas */
+.area-icon{width:48px;height:48px;border-radius:12px;background:rgba(201,162,39,.15);color:var(--accent);display:grid;place-items:center;margin-bottom:14px}
+.area h3{margin-bottom:8px;font-size:1.15rem}
+.area p{color:var(--text-muted);font-size:.92rem}
+
+/* cases */
+.case{position:relative;overflow:hidden}
+.case-img{height:180px;border-radius:10px;overflow:hidden;margin-bottom:14px;background:var(--bg-2)}
+.case-img img{width:100%;height:100%;object-fit:cover}
+.case-tag{display:inline-block;font-size:.75rem;font-weight:600;color:var(--accent);background:rgba(201,162,39,.12);padding:4px 10px;border-radius:20px;margin-bottom:8px}
+
+/* differentials */
+.diff{display:flex;gap:14px;align-items:flex-start}
+.diff-icon{flex:0 0 40px;height:40px;border-radius:10px;background:var(--primary);color:var(--accent);display:grid;place-items:center}
+.diff h3{font-size:1.05rem;margin-bottom:4px}
+.diff p{color:var(--text-muted);font-size:.9rem}
+
+/* testimonials carousel */
+.carousel{position:relative;max-width:760px;margin:0 auto}
+.slides{position:relative;min-height:180px}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity .5s;display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px}
+.slide.active{opacity:1;position:relative}
+.slide p{font-style:italic;font-size:1.05rem;margin-bottom:14px}
+.slide .author{font-weight:600;color:var(--accent)}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:16px}
+.dot{width:44px;height:44px;padding:17px;border-radius:50%;background:var(--border);background-clip:content-box;border:none;cursor:pointer;transition:background .2s;box-sizing:border-box}
+.dot.active{background:var(--accent)}
+
+/* contact + map */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+@media(max-width:768px){.contact-grid{grid-template-columns:1fr}}
+.map{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);min-height:320px;background:var(--bg-2)}
+.map iframe{width:100%;height:100%;min-height:320px;border:0}
+form.contact input,form.contact textarea,form.contact select{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;margin-bottom:12px}
+form.contact input:focus,form.contact textarea:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+form.contact button{width:100%}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:var(--hero-text);padding:14px 20px;border-radius:10px;box-shadow:var(--shadow);transform:translateY(120%);transition:transform .3s;z-index:100}
+.toast.show{transform:translateY(0)}
+
+/* newsletter */
+.newsletter{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center}
+.newsletter form{display:flex;gap:10px;max-width:480px;margin:16px auto 0}
+.newsletter input{flex:1;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)}
+.newsletter button{padding:12px 20px}
+@media(max-width:500px){.newsletter form{flex-direction:column}}
+
+/* footer */
+footer.site{background:var(--bg-2);border-top:1px solid var(--border);padding:48px 0 24px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px}
+@media(max-width:768px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.footer-grid{grid-template-columns:1fr}}
+.footer-grid h4{margin-bottom:12px;color:var(--accent)}
+.footer-grid ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-grid a{color:var(--text-muted);font-size:.9rem}
+.footer-grid a:hover{color:var(--accent)}
+.socials{display:flex;gap:10px;margin-top:14px}
+.socials a{width:44px;height:44px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:grid;place-items:center;color:var(--text-muted);transition:color .2s,background .2s}
+.socials a:hover{color:#fff;background:var(--accent)}
+.footer-bottom{margin-top:32px;padding-top:16px;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible,.dot:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ===== PWA / mobile app adjustments ===== */
+html{scroll-padding-top:60px}
+body{padding-bottom:0} @media(max-width:768px){body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:space-around;align-items:center;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);backdrop-filter:saturate(180%) blur(8px)}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:44px;min-height:44px;padding:6px 8px;border-radius:10px;color:var(--text-muted);font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;text-decoration:none}
+.bottom-nav a svg{width:22px;height:22px}
+.bottom-nav a.active,.bottom-nav a:hover{color:var(--accent)}
+.bottom-nav a.wa{color:#25D366}
+details.sec-collapse>summary::-webkit-details-marker{display:none}
+details.sec-collapse>summary::marker{content:""}
+@media (min-width:769px){.bottom-nav{display:none}}
+@media (max-width:480px){
+  section{padding:48px 0}
+  .hero{height:auto;min-height:auto;padding:48px 0 32px}
+  .hero h1{font-size:1.6rem}
+  .hero p{font-size:.95rem}
+  .section-title h2{font-size:1.4rem}
+  .card,.treat-card,.service{padding:18px}
+  .container{padding:0 16px}
+  .grid-3,.grid-2,.service-grid,.doctor-grid,.ins-grid,.diff-grid,.ba-grid,.footer-grid,.contact-grid,.booking-wrap,.appoint-wrap{grid-template-columns:1fr !important}
+  img{max-width:100%}
+}
+a,button{min-height:44px}
+button{min-width:44px}
+input,select,textarea{font-size:16px;min-height:44px}
+header.site{padding-top:env(safe-area-inset-top)}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<header class="site">
+  <div class="container header-inner">
+    <a href="#" class="logo">Monteiro <span>& Associados</span></a>
+    <nav class="main" aria-label="Principal">
+      <a href="#sobre">Sobre</a>
+      <a href="#areas">Áreas</a>
+      <a href="#casos">Casos</a>
+      <a href="#depoimentos">Depoimentos</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <div class="header-actions">
+      <div class="socials" aria-label="Redes sociais">
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+        <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+      </div>
+      <button type="button" class="theme-btn" id="themeBtn" aria-label="Alternar tema"><svg id="themeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button type="button" class="hamburger" id="hamburger" aria-label="Menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#sobre">Sobre</a><a href="#areas">Áreas</a><a href="#casos">Casos</a><a href="#depoimentos">Depoimentos</a><a href="#contato">Contato</a>
+  </div>
+</header>
+
+<main id="conteudo">
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <h1>Defendendo seus direitos com excelência e tradição</h1>
+        <p>Escritório Monteiro & Associados: atuação estratégica em direito civil, trabalhista, tributário e empresarial, com mais de 20 anos de experiência.</p>
+        <div class="hero-cta">
+          <a href="#contato" class="btn btn-primary">Agendar consulta</a>
+          <a href="#areas" class="btn btn-outline">Nossas áreas</a>
+        </div>
+      </div>
+      <div class="hero-img"><img src="https://images.unsplash.com/photo-1589829545856-d10d5573983a?w=900&q=80" alt="Sala de reuniões do escritório de advocacia" loading="lazy"></div>
+    </div>
+  </section>
+
+  <section id="sobre">
+    <div class="container">
+      <div class="section-title">
+        <h2>Sobre o escritório</h2>
+        <p>Tradição, ética e resultados. Atuamos com compromisso e estratégia para proteger o que mais importa.</p>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Nossa história</h3>
+          <p>Fundado em 2004, o escritório Monteiro & Associados nasceu com o propósito de oferecer advocacia de alto nível, próxima e acessível. Hoje contamos com uma equipe multidisciplinar de advogados dedicados.</p>
+        </div>
+        <div class="card">
+          <h3>Nossa missão</h3>
+          <p>Garantir segurança jurídica e tranquilidade aos nossos clientes, com atendimento personalizado, transparência e foco em resultados sustentáveis.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="areas" style="background:var(--bg-2)">
+    <div class="container">
+      <div class="section-title">
+        <h2>Áreas de atuação</h2>
+        <p>Expertise em diversas frentes do direito para atender pessoas e empresas.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card area">
+          <div class="area-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l9 4.5v9L12 21l-9-4.5v-9L12 3z"/></svg></div>
+          <h3>Direito Civil</h3>
+          <p>Contratos, responsabilidade civil, família e sucessões com atendimento humanizado.</p>
+        </div>
+        <div class="card area">
+          <div class="area-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+          <h3>Direito Trabalhista</h3>
+          <p>Defesa de empregados e empregadores em ações e consultoria preventiva.</p>
+        </div>
+        <div class="card area">
+          <div class="area-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <h3>Direito Tributário</h3>
+          <p>Planejamento fiscal, defesas administrativas e judiciais.</p>
+        </div>
+        <div class="card area">
+          <div class="area-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <h3>Direito Empresarial</h3>
+          <p>Societário, M&A, compliance e governança corporativa.</p>
+        </div>
+        <div class="card area">
+          <div class="area-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <h3>Direito do Consumidor</h3>
+          <p>Defesa de direitos em relações de consumo e ações coletivas.</p>
+        </div>
+        <div class="card area">
+          <div class="area-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h3>Direito Penal</h3>
+          <p>Defesa criminal e acompanhamento em inquéritos e processos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="casos">
+    <div class="container">
+      <div class="section-title">
+        <h2>Casos de sucesso</h2>
+        <p>Resultados que refletem nosso compromisso com a justiça.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card case">
+          <div class="case-img"><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80" alt="Documentos jurídicos" loading="lazy"></div>
+          <span class="case-tag">Trabalhista</span>
+          <h3>Reintegração de executivo</h3>
+          <p>Obtivemos reintegração e indenizações em caso de demissão discriminatória.</p>
+        </div>
+        <div class="card case">
+          <div class="case-img"><img src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=600&q=80" alt="Tribunal" loading="lazy"></div>
+          <span class="case-tag">Tributário</span>
+          <h3>Recuperação de créditos</h3>
+          <p>Recuperação de R$ 4,2M em créditos tributários para cliente empresarial.</p>
+        </div>
+        <div class="card case">
+          <div class="case-img"><img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&q=80" alt="Reunião" loading="lazy"></div>
+          <span class="case-tag">Empresarial</span>
+          <h3>Reestruturação societária</h3>
+          <p>Assessoria completa em fusão e reorganização de grupo empresarial.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="diferenciais" style="background:var(--bg-2)">
+    <div class="container">
+      <div class="section-title"><h2>Por que nos escolher</h2></div>
+      <div class="grid-2">
+        <div class="diff"><div class="diff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div><h3>Atendimento personalizado</h3><p>Cada caso recebe atenção dedicada de um advogado responsável.</p></div></div>
+        <div class="diff"><div class="diff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div><h3>Agilidade</h3><p>Processos acompanhados em tempo real com atualizações constantes.</p></div></div>
+        <div class="diff"><div class="diff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><h3>Confidencialidade</h3><p>Sigilo absoluto em todas as informações do cliente.</p></div></div>
+        <div class="diff"><div class="diff-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div><h3>Honorários transparentes</h3><p>Proposta clara, sem surpresas, com parcelamento facilitado.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="depoimentos">
+    <div class="container">
+      <div class="section-title"><h2>Depoimentos</h2></div>
+      <div class="carousel" id="carousel">
+        <div class="slides">
+          <div class="slide active"><p>"Profissionalismo exemplar. Me senti seguro em todo o processo."</p><span class="author">— Carlos M., empresário</span></div>
+          <div class="slide"><p>"Atendimento humano e resultado acima do esperado. Recomendo."</p><span class="author">— Ana P., cliente civil</span></div>
+          <div class="slide"><p>"Equipe competente e ágil. Resolveram meu caso trabalhista com maestria."</p><span class="author">— João R., engenheiro</span></div>
+        </div>
+        <div class="dots" id="dots"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contato" style="background:var(--bg-2)">
+    <div class="container">
+      <div class="section-title"><h2>Agende sua consulta</h2><p>Primeira consulta gratuita. Preencha o formulário.</p></div>
+      <div class="contact-grid">
+        <form class="contact" id="contactForm">
+          <input type="text" name="nome" placeholder="Nome completo" aria-label="Nome completo" required>
+          <input type="email" name="email" placeholder="E-mail" aria-label="E-mail" required>
+          <input type="tel" name="telefone" placeholder="Telefone" aria-label="Telefone" required>
+          <select name="area" aria-label="Área de interesse" required>
+            <option value="">Área de interesse</option>
+            <option>Civil</option><option>Trabalhista</option><option>Tributário</option><option>Empresarial</option>
+          </select>
+          <textarea name="mensagem" rows="4" placeholder="Descreva seu caso" aria-label="Descreva seu caso" required></textarea>
+          <button class="btn btn-primary" type="submit">Enviar solicitação</button>
+        </form>
+        <div class="map">
+          <iframe title="Mapa" loading="lazy" src="https://www.google.com/maps?q=São+Paulo&output=embed"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="newsletter">
+    <div class="container">
+      <div class="newsletter">
+        <h3>Newsletter jurídica</h3>
+        <p>Receba artigos e novidades do direito no seu e-mail.</p>
+        <form id="newsForm">
+          <input type="email" placeholder="Seu e-mail" aria-label="Seu e-mail" required>
+          <button class="btn btn-primary" type="submit">Assinar</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="#" class="logo">Monteiro <span>& Associados</span></a>
+        <p style="color:var(--text-muted);margin-top:10px;font-size:.9rem">Advocacia e consultoria jurídica de excelência.</p>
+        <div class="socials">
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg></a>
+          <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.063 2.063 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+        </div>
+      </div>
+      <div><h4>Navegação</h4><ul><li><a href="#sobre">Sobre</a></li><li><a href="#areas">Áreas</a></li><li><a href="#casos">Casos</a></li><li><a href="#contato">Contato</a></li></ul></div>
+      <div><h4>Contato</h4><ul><li><a href="tel:+5511999999999">+55 11 99999-9999</a></li><li><a href="mailto:contato@monteiro.adv.br">contato@monteiro.adv.br</a></li><li>Av. Paulista, 1000 - SP</li></ul></div>
+      <div><h4>Legal</h4><ul><li><a href="#">Política de privacidade</a></li><li><a href="#">Termos de uso</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">© 2026 Monteiro & Associados. Todos os direitos reservados.</div>
+  </div>
+</footer>
+
+<nav class="bottom-nav" aria-label="Navegação rápida">
+  <a href="#conteudo" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span>Inicio</span></a>
+  <a href="#areas" data-nav="services"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Servicos</span></a>
+  <a href="#contato" data-nav="contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Contato</span></a>
+  <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer" class="wa" data-nav="wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span>WhatsApp</span></a>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Mensagem enviada com sucesso!</div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var btn=document.getElementById('themeBtn');
+  var icon=document.getElementById('themeIcon');
+  function apply(t){
+    root.setAttribute('data-theme',t);
+    try{localStorage.setItem('lp-theme',t);}catch(e){}
+    icon.innerHTML = t==='dark' ? '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>' : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  }
+  btn.addEventListener('click',function(){apply(root.getAttribute('data-theme')==='dark'?'light':'dark');});
+  apply(root.getAttribute('data-theme'));
+
+  // mobile menu
+  var ham=document.getElementById('hamburger');
+  var mm=document.getElementById('mobileMenu');
+  ham.addEventListener('click',function(){mm.classList.toggle('open');});
+mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){mm.classList.remove('open');});});
+
+  // carousel
+  var slides=document.querySelectorAll('.slide');
+  var dotsC=document.getElementById('dots');
+  var idx=0;
+  slides.forEach(function(_,i){var d=document.createElement('button');d.type='button';d.className='dot'+(i===0?' active':'');d.setAttribute('aria-label','Slide '+(i+1));d.addEventListener('click',function(){go(i);});dotsC.appendChild(d);});
+  function go(i){slides[idx].classList.remove('active');dotsC.children[idx].classList.remove('active');idx=i;slides[idx].classList.add('active');dotsC.children[idx].classList.add('active');}
+  setInterval(function(){go((idx+1)%slides.length);},5000);
+
+  // toast
+  var toast=document.getElementById('toast');
+  function showToast(msg){toast.textContent=msg;toast.classList.add('show');setTimeout(function(){toast.classList.remove('show');},3000);}
+  document.getElementById('contactForm').addEventListener('submit',function(e){e.preventDefault();this.reset();showToast('Solicitação enviada! Retornaremos em breve.');});
+  document.getElementById('newsForm').addEventListener('submit',function(e){e.preventDefault();this.reset();showToast('Inscrição realizada com sucesso!');});
+})();
+
+  // register service worker
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(e){console.warn('SW fail',e);});}
+  // collapsible sections on mobile
+  (function(){
+    if(window.innerWidth>480) return;
+    document.querySelectorAll('main section').forEach(function(sec){
+      var h=sec.querySelector('h2,h3');
+      if(!h) return;
+      var det=document.createElement('details');
+      det.className='sec-collapse';
+      det.setAttribute('open','');
+      var sum=document.createElement('summary');
+      sum.textContent=h.textContent;
+      sum.style.cssText='cursor:pointer;font-weight:700;padding:12px 0;list-style:none';
+      while(sec.firstChild) det.appendChild(sec.firstChild);
+      det.insertBefore(sum,det.firstChild);
+      sec.appendChild(det);
+    });
+  })();
+
+</script>
+</body>
+</html>

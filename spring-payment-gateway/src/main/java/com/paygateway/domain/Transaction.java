@@ -12,6 +12,8 @@ public class Transaction {
     @Id
     private Long id;
     private String transactionId;
+    private String idempotencyKey;
+    private String requestHash;
     private String payerId;
     private String payeeId;
     private BigDecimal amount;
@@ -23,9 +25,12 @@ public class Transaction {
 
     public Transaction() {}
 
-    public Transaction(String transactionId, String payerId, String payeeId, BigDecimal amount,
+    public Transaction(String transactionId, String idempotencyKey, String requestHash,
+                       String payerId, String payeeId, BigDecimal amount,
                        String currency, String status, String gatewayUsed, Long latencyMs, Instant createdAt) {
         this.transactionId = transactionId;
+        this.idempotencyKey = idempotencyKey;
+        this.requestHash = requestHash;
         this.payerId = payerId;
         this.payeeId = payeeId;
         this.amount = amount;
@@ -40,6 +45,10 @@ public class Transaction {
     public void setId(Long id) { this.id = id; }
     public String getTransactionId() { return transactionId; }
     public void setTransactionId(String transactionId) { this.transactionId = transactionId; }
+    public String getIdempotencyKey() { return idempotencyKey; }
+    public void setIdempotencyKey(String idempotencyKey) { this.idempotencyKey = idempotencyKey; }
+    public String getRequestHash() { return requestHash; }
+    public void setRequestHash(String requestHash) { this.requestHash = requestHash; }
     public String getPayerId() { return payerId; }
     public void setPayerId(String payerId) { this.payerId = payerId; }
     public String getPayeeId() { return payeeId; }

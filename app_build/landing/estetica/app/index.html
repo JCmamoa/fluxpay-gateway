@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#6b8f71">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bella Vita">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/icon.svg">
+
+<title>Bella Vita Estética | Clínica de Beleza e Bem-estar</title>
+<meta name="description" content="Clínica de estética avançada: tratamentos faciais, corporais e bem-estar. Agende sua avaliação gratuita.">
+<meta property="og:title" content="Bella Vita Estética">
+<meta property="og:description" content="Realce sua beleza natural com tratamentos personalizados.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<script>
+(function(){var s=null;try{s=localStorage.getItem('lp-theme');}catch(e){}var d=window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',s||(d?'dark':'light'));})();
+</script>
+<style>
+:root{
+  --bg:#faf6f2;--bg-2:#fff;--surface:#fff;--text:#3a2f2f;--text-muted:#7a6a6a;
+  --primary:#6b8f71;--accent:#e8a0b4;--accent-2:#d97a95;--border:#f0e2e6;
+  --shadow:0 8px 28px rgba(107,143,113,.10);--radius:18px;--max:1200px;
+}
+[data-theme="dark"]{
+  --bg:#1a1f1c;--bg-2:#232b26;--surface:#2a332d;--text:#f2ebe6;--text-muted:#b8c4bb;
+  --primary:#8fb396;--accent:#f0b4c4;--accent-2:#e8a0b4;--border:#3a463e;
+  --shadow:0 8px 28px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-weight:300;transition:background .3s,color .3s}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+.container{max-width:var(--max);margin:0 auto;padding:0 20px}
+h1,h2,h3{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;line-height:1.1}
+.skip{position:absolute;left:-9999px;top:0;background:var(--accent);color:#fff;padding:8px 12px;z-index:1000}
+.skip:focus{left:8px;top:8px}
+
+header.site{position:sticky;top:0;z-index:50;background:rgba(250,246,242,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+[data-theme="dark"] header.site{background:rgba(26,31,28,.85)}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:16px}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--primary)}
+.logo span{color:var(--accent)}
+nav.main{display:flex;gap:26px}
+nav.main a{font-size:.95rem;letter-spacing:.05em;text-transform:uppercase;opacity:.8}
+nav.main a:hover{opacity:1;color:var(--accent)}
+.header-actions{display:flex;align-items:center;gap:12px}
+.theme-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:50%;cursor:pointer;display:grid;place-items:center}
+.hamburger{display:none;background:none;border:none;color:var(--text);cursor:pointer}
+.mobile-menu{display:none;flex-direction:column;gap:10px;padding:12px 20px 20px;border-top:1px solid var(--border)}
+.mobile-menu.open{display:flex}
+@media(max-width:768px){nav.main{display:none}.hamburger{display:block}}
+
+/* full-bleed hero */
+.hero{position:relative;height:88vh;min-height:520px;overflow:hidden;display:flex;align-items:center}
+.hero-bg{position:absolute;inset:0;background:var(--bg-2)}
+.hero-bg img{width:100%;height:100%;object-fit:cover}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 60%)}
+.hero-content{position:relative;z-index:2;color:#fff;max-width:560px;padding:0 20px;margin-left:8%}
+.hero-content h1{font-size:clamp(2.4rem,5vw,4rem);margin-bottom:16px}
+.hero-content p{font-size:1.1rem;margin-bottom:24px;opacity:.95;font-weight:400}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:40px;font-weight:500;border:2px solid transparent;cursor:pointer;transition:transform .15s,background .2s;letter-spacing:.05em;text-transform:uppercase;font-size:.85rem}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-ghost{background:transparent;border-color:#fff;color:#fff}
+@media(max-width:768px){.hero-content{margin-left:0;text-align:center}.hero-cta{justify-content:center}}
+
+/* treatments */
+.treatments{padding:80px 0}
+.treat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:transform .2s}
+.treat-card:hover{transform:translateY(-6px)}
+.treat-img{height:200px;overflow:hidden;background:var(--bg-2)}
+.treat-img img{width:100%;height:100%;object-fit:cover}
+.treat-body{padding:20px}
+.treat-body h3{font-size:1.3rem;margin-bottom:6px}
+.treat-body p{color:var(--text-muted);font-size:.9rem;margin-bottom:12px}
+.price{font-size:1.4rem;color:var(--accent);font-weight:500}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media(max-width:900px){.grid-3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.grid-3{grid-template-columns:1fr}}
+
+/* before/after */
+.ba{padding:80px 0;background:var(--bg-2)}
+.ba-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.ba-item{position:relative;border-radius:var(--radius);overflow:hidden}
+.ba-item img{width:100%;height:280px;object-fit:cover}
+.ba-label{position:absolute;bottom:12px;left:12px;background:rgba(0,0,0,.6);color:#fff;padding:6px 12px;border-radius:20px;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr}}
+
+/* team */
+.team{padding:80px 0}
+.team-card{text-align:center}
+.team-card img{width:140px;height:140px;border-radius:50%;object-fit:cover;margin:0 auto 14px;border:4px solid var(--accent)}
+.team-card h3{font-size:1.2rem}
+.team-card p{color:var(--text-muted);font-size:.85rem}
+
+/* differentials */
+.diff-section{padding:60px 0;background:var(--bg-2)}
+.diff-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
+.diff-grid .icon{width:60px;height:60px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;margin:0 auto 12px}
+@media(max-width:768px){.diff-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* booking */
+.booking{padding:80px 0}
+.booking-wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.booking-form input,.booking-form select,.booking-form textarea{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font:inherit;margin-bottom:12px}
+.booking-form input:focus,.booking-form select:focus,.booking-form textarea:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+.booking-form button{width:100%}
+.booking-info h3{margin-bottom:12px}
+.booking-info p{color:var(--text-muted);margin-bottom:10px}
+@media(max-width:768px){.booking-wrap{grid-template-columns:1fr}}
+
+/* testimonials */
+.testi{padding:60px 0;background:var(--bg-2)}
+.carousel{position:relative;max-width:720px;margin:0 auto}
+.slides{position:relative;min-height:160px}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity .5s;text-align:center;padding:20px}
+.slide.active{opacity:1;position:relative}
+.slide p{font-style:italic;font-size:1.15rem;margin-bottom:12px}
+.slide .author{font-weight:500;color:var(--accent)}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:12px}
+.dot{width:44px;height:44px;padding:18px;border-radius:50%;background:var(--border);background-clip:content-box;border:none;cursor:pointer;box-sizing:border-box}
+.dot.active{background:var(--accent)}
+
+/* footer */
+footer.site{background:var(--bg-2);border-top:1px solid var(--border);padding:48px 0 24px}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px}
+@media(max-width:768px){.footer-grid{grid-template-columns:1fr}}
+.footer-grid h4{margin-bottom:12px;color:var(--accent)}
+.footer-grid ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-grid a{color:var(--text-muted);font-size:.9rem}
+.socials{display:flex;gap:10px;margin-top:14px}
+.socials a{width:44px;height:44px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:grid;place-items:center;color:var(--text-muted)}
+.socials a:hover{color:#fff;background:var(--accent)}
+.footer-bottom{margin-top:28px;padding-top:14px;border-top:1px solid var(--border);text-align:center;color:var(--text-muted);font-size:.85rem}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--primary);color:#fff;padding:14px 20px;border-radius:12px;box-shadow:var(--shadow);transform:translateY(120%);transition:transform .3s;z-index:100}
+.toast.show{transform:translateY(0)}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible,.dot:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ===== PWA / mobile app adjustments ===== */
+html{scroll-padding-top:60px}
+body{padding-bottom:0} @media(max-width:768px){body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:space-around;align-items:center;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);backdrop-filter:saturate(180%) blur(8px)}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:44px;min-height:44px;padding:6px 8px;border-radius:10px;color:var(--text-muted);font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em;text-decoration:none}
+.bottom-nav a svg{width:22px;height:22px}
+.bottom-nav a.active,.bottom-nav a:hover{color:var(--accent)}
+.bottom-nav a.wa{color:#25D366}
+details.sec-collapse>summary::-webkit-details-marker{display:none}
+details.sec-collapse>summary::marker{content:""}
+@media (min-width:769px){.bottom-nav{display:none}}
+@media (max-width:480px){
+  section{padding:48px 0}
+  .hero{height:auto;min-height:auto;padding:48px 0 32px}
+  .hero h1{font-size:1.6rem}
+  .hero p{font-size:.95rem}
+  .section-title h2{font-size:1.4rem}
+  .card,.treat-card,.service{padding:18px}
+  .container{padding:0 16px}
+  .grid-3,.grid-2,.service-grid,.doctor-grid,.ins-grid,.diff-grid,.ba-grid,.footer-grid,.contact-grid,.booking-wrap,.appoint-wrap{grid-template-columns:1fr !important}
+  img{max-width:100%}
+}
+a,button{min-height:44px}
+button{min-width:44px}
+input,select,textarea{font-size:16px;min-height:44px}
+header.site{padding-top:env(safe-area-inset-top)}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<header class="site">
+  <div class="container header-inner">
+    <a href="#" class="logo">Bella <span>Vita</span></a>
+    <nav class="main" aria-label="Principal">
+      <a href="#tratamentos">Tratamentos</a>
+      <a href="#galeria">Galeria</a>
+      <a href="#equipe">Equipe</a>
+      <a href="#agendar">Agendar</a>
+    </nav>
+    <div class="header-actions">
+      <div class="socials">
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+        <a href="https://wa.me/5511988888888" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+      </div>
+      <button type="button" class="theme-btn" id="themeBtn" aria-label="Alternar tema"><svg id="themeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+      <button type="button" class="hamburger" id="hamburger" aria-label="Menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#tratamentos">Tratamentos</a><a href="#galeria">Galeria</a><a href="#equipe">Equipe</a><a href="#agendar">Agendar</a>
+  </div>
+</header>
+
+<main id="conteudo">
+  <section class="hero">
+    <div class="hero-bg"><img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=1600&q=80" alt="Clínica de estética" loading="eager"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Realce sua beleza natural</h1>
+      <p>Tratamentos personalizados com tecnologia de ponta e cuidado humanizado. Agende sua avaliação gratuita.</p>
+      <div class="hero-cta">
+        <a href="#agendar" class="btn btn-primary">Agendar avaliação</a>
+        <a href="#tratamentos" class="btn btn-ghost">Ver tratamentos</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="tratamentos" class="treatments">
+    <div class="container">
+      <div class="section-title" style="text-align:center;margin-bottom:40px">
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem)">Tratamentos</h2>
+        <p style="color:var(--text-muted)">Protocolos personalizados para cada objetivo.</p>
+      </div>
+      <div class="grid-3">
+        <div class="treat-card">
+          <div class="treat-img"><img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=600&q=80" alt="Limpeza de pele" loading="lazy"></div>
+          <div class="treat-body"><h3>Limpeza de Pele</h3><p>Remoção de impurezas e renovação celular profunda.</p><span class="price">R$ 180</span></div>
+        </div>
+        <div class="treat-card">
+          <div class="treat-img"><img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=600&q=80" alt="Botox" loading="lazy"></div>
+          <div class="treat-body"><h3>Toxina Botulínica</h3><p>Suavização de linhas de expressão com naturalidade.</p><span class="price">R$ 1.200</span></div>
+        </div>
+        <div class="treat-card">
+          <div class="treat-img"><img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=600&q=80" alt="Preenchimento" loading="lazy"></div>
+          <div class="treat-body"><h3>Preenchimento</h3><p>Restauração de volume e contorno facial.</p><span class="price">R$ 1.800</span></div>
+        </div>
+        <div class="treat-card">
+          <div class="treat-img"><img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&q=80" alt="Massagem" loading="lazy"></div>
+          <div class="treat-body"><h3>Massagem Relaxante</h3><p>Alívio de tensões e bem-estar completo.</p><span class="price">R$ 150</span></div>
+        </div>
+        <div class="treat-card">
+          <div class="treat-img"><img src="https://images.unsplash.com/photo-1519415510236-718bdfcd89c8?w=600&q=80" alt="Peeling" loading="lazy"></div>
+          <div class="treat-body"><h3>Peeling Químico</h3><p>Renovação da pele e uniformização do tom.</p><span class="price">R$ 320</span></div>
+        </div>
+        <div class="treat-card">
+          <div class="treat-img"><img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=600&q=80" alt="Drenagem" loading="lazy"></div>
+          <div class="treat-body"><h3>Drenagem Linfática</h3><p>Redução de inchaço e modelagem corporal.</p><span class="price">R$ 160</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="galeria" class="ba">
+    <div class="container">
+      <div class="section-title" style="text-align:center;margin-bottom:40px">
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem)">Antes e Depois</h2>
+        <p style="color:var(--text-muted)">Resultados reais de nossos pacientes.</p>
+      </div>
+      <div class="ba-grid">
+        <div class="ba-item"><img src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=700&q=80" alt="Antes e depois 1" loading="lazy"><span class="ba-label">Preenchimento</span></div>
+        <div class="ba-item"><img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=700&q=80" alt="Antes e depois 2" loading="lazy"><span class="ba-label">Limpeza de pele</span></div>
+        <div class="ba-item"><img src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=700&q=80" alt="Antes e depois 3" loading="lazy"><span class="ba-label">Botox</span></div>
+        <div class="ba-item"><img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=700&q=80" alt="Antes e depois 4" loading="lazy"><span class="ba-label">Massagem</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="diff-section">
+    <div class="container">
+      <div class="diff-grid">
+        <div><div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3>Segurança</h3><p style="color:var(--text-muted);font-size:.85rem">Protocolos rigorosos e profissionais certificados.</p></div>
+        <div><div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><h3>Agilidade</h3><p style="color:var(--text-muted);font-size:.85rem">Resultados visíveis desde a primeira sessão.</p></div>
+        <div><div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><h3>Atendimento</h3><p style="color:var(--text-muted);font-size:.85rem">Cuidado personalizado e acolhedor.</p></div>
+        <div><div class="icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3>Excelência</h3><p style="color:var(--text-muted);font-size:.85rem">Equipamentos de última geração.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="equipe" class="team">
+    <div class="container">
+      <div class="section-title" style="text-align:center;margin-bottom:40px">
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem)">Nossa Equipe</h2>
+      </div>
+      <div class="grid-3">
+        <div class="team-card">
+          <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&q=80" alt="Dra. Camila" loading="lazy">
+          <h3>Dra. Camila Reis</h3>
+          <p>Biomédica esteta</p>
+        </div>
+        <div class="team-card">
+          <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=300&q=80" alt="Dra. Lúcia" loading="lazy">
+          <h3>Dra. Lúcia Mendes</h3>
+          <p>Dermatologista</p>
+        </div>
+        <div class="team-card">
+          <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=300&q=80" alt="Dra. Fernanda" loading="lazy">
+          <h3>Dra. Fernanda Costa</h3>
+          <p>Esteticista</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="depoimentos" class="testi">
+    <div class="container">
+      <div class="section-title" style="text-align:center;margin-bottom:30px">
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem)">Depoimentos</h2>
+      </div>
+      <div class="carousel" id="carousel">
+        <div class="slides">
+          <div class="slide active"><p>"A melhor clínica que já frequentei. Resultados incríveis e atendimento impecável."</p><span class="author">— Mariana S.</span></div>
+          <div class="slide"><p>"Profissionais maravilhosos, ambiente acolhedor. Me sinto renovada."</p><span class="author">— Patrícia L.</span></div>
+          <div class="slide"><p>"Tecnologia de ponta e cuidado humanizado. Super recomendo."</p><span class="author">— Juliana R.</span></div>
+        </div>
+        <div class="dots" id="dots"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="agendar" class="booking">
+    <div class="container">
+      <div class="section-title" style="text-align:center;margin-bottom:40px">
+        <h2 style="font-size:clamp(1.8rem,3vw,2.6rem)">Agende sua avaliação</h2>
+      </div>
+      <div class="booking-wrap">
+        <form class="booking-form" id="bookingForm">
+          <input type="text" name="nome" placeholder="Nome completo" aria-label="Nome completo" required>
+          <input type="tel" name="telefone" placeholder="Telefone / WhatsApp" aria-label="Telefone / WhatsApp" required>
+          <input type="email" name="email" placeholder="E-mail" aria-label="E-mail" required>
+          <select name="tratamento" aria-label="Tratamento de interesse" required>
+            <option value="">Tratamento de interesse</option>
+            <option>Limpeza de Pele</option><option>Toxina Botulínica</option><option>Preenchimento</option><option>Massagem</option><option>Peeling</option><option>Drenagem</option>
+          </select>
+          <textarea name="obs" rows="3" placeholder="Observações (opcional)" aria-label="Observações"></textarea>
+          <button class="btn btn-primary" type="submit">Confirmar agendamento</button>
+        </form>
+        <div class="booking-info">
+          <h3>Informações</h3>
+          <p>📍 Rua das Flores, 250 - Jardins, São Paulo</p>
+          <p>📞 (11) 98888-8888</p>
+          <p>🕐 Seg a Sáb: 9h às 19h</p>
+          <p>✉️ contato@bellavita.com.br</p>
+          <p style="margin-top:16px;color:var(--text-muted);font-size:.9rem">Avaliação inicial gratuita. Cancelamentos com até 24h de antecedência.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="#" class="logo">Bella <span>Vita</span></a>
+        <p style="color:var(--text-muted);margin-top:10px;font-size:.9rem">Clínica de estética e bem-estar.</p>
+        <div class="socials">
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg></a>
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+          <a href="https://wa.me/5511988888888" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+        </div>
+      </div>
+      <div><h4>Links</h4><ul><li><a href="#tratamentos">Tratamentos</a></li><li><a href="#galeria">Galeria</a></li><li><a href="#equipe">Equipe</a></li><li><a href="#agendar">Agendar</a></li></ul></div>
+      <div><h4>Contato</h4><ul><li>Rua das Flores, 250</li><li>(11) 98888-8888</li><li>contato@bellavita.com.br</li></ul></div>
+    </div>
+    <div class="footer-bottom">© 2026 Bella Vita Estética. Todos os direitos reservados.</div>
+  </div>
+</footer>
+
+<nav class="bottom-nav" aria-label="Navegação rápida">
+  <a href="#conteudo" data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span>Inicio</span></a>
+  <a href="#tratamentos" data-nav="services"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Servicos</span></a>
+  <a href="#agendar" data-nav="contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Contato</span></a>
+  <a href="https://wa.me/5511988888888" target="_blank" rel="noopener noreferrer" class="wa" data-nav="wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span>WhatsApp</span></a>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Agendamento enviado!</div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var btn=document.getElementById('themeBtn');
+  var icon=document.getElementById('themeIcon');
+  function apply(t){root.setAttribute('data-theme',t);try{localStorage.setItem('lp-theme',t);}catch(e){};icon.innerHTML=t==='dark'?'<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>':'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';}
+  btn.addEventListener('click',function(){apply(root.getAttribute('data-theme')==='dark'?'light':'dark');});
+  apply(root.getAttribute('data-theme'));
+  var ham=document.getElementById('hamburger');var mm=document.getElementById('mobileMenu');
+  ham.addEventListener('click',function(){mm.classList.toggle('open');});
+mm.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){mm.classList.remove('open');});});
+  var slides=document.querySelectorAll('.slide');var dotsC=document.getElementById('dots');var idx=0;
+  slides.forEach(function(_,i){var d=document.createElement('button');d.type='button';d.className='dot'+(i===0?' active':'');d.setAttribute('aria-label','Slide '+(i+1));d.addEventListener('click',function(){go(i);});dotsC.appendChild(d);});
+  function go(i){slides[idx].classList.remove('active');dotsC.children[idx].classList.remove('active');idx=i;slides[idx].classList.add('active');dotsC.children[idx].classList.add('active');}
+  setInterval(function(){go((idx+1)%slides.length);},5000);
+  var toast=document.getElementById('toast');
+  function showToast(m){toast.textContent=m;toast.classList.add('show');setTimeout(function(){toast.classList.remove('show');},3000);}
+  document.getElementById('bookingForm').addEventListener('submit',function(e){e.preventDefault();this.reset();showToast('Agendamento confirmado! Entraremos em contato.');});
+})();
+
+  // register service worker
+  if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(e){console.warn('SW fail',e);});}
+  // collapsible sections on mobile
+  (function(){
+    if(window.innerWidth>480) return;
+    document.querySelectorAll('main section').forEach(function(sec){
+      var h=sec.querySelector('h2,h3');
+      if(!h) return;
+      var det=document.createElement('details');
+      det.className='sec-collapse';
+      det.setAttribute('open','');
+      var sum=document.createElement('summary');
+      sum.textContent=h.textContent;
+      sum.style.cssText='cursor:pointer;font-weight:700;padding:12px 0;list-style:none';
+      while(sec.firstChild) det.appendChild(sec.firstChild);
+      det.insertBefore(sum,det.firstChild);
+      sec.appendChild(det);
+    });
+  })();
+
+</script>
+</body>
+</html>

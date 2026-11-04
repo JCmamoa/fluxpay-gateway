@@ -2,21 +2,15 @@ server:
   port: 8080
 
 spring:
-  r2dbc:
-    url: r2dbc:h2:mem:///paymentsdb;DB_CLOSE_DELAY=-1
-  sql:
-    init:
-      mode: always
+  profiles:
+    default: dev
 
 jwt:
-  secret: ${JWT_SECRET:dev-only-secret-change-me-before-production-0123456789}
+  secret: ${JWT_SECRET:}
 
 app:
-  auth:
-    username: ${AUTH_USERNAME:}
-    password: ${AUTH_PASSWORD:}
   cors:
-    allowed-origins: http://localhost:3000,http://localhost:5173
+    allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173}
 
 resilience4j:
   circuitbreaker:
@@ -52,7 +46,7 @@ management:
         include: health,prometheus,metrics,circuitbreakers
   endpoint:
     health:
-      show-details: always
+      show-details: never
   health:
     circuitbreakers:
       enabled: true

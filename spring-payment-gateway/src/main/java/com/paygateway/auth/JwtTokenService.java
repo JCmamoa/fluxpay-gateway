@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class JwtTokenService {
@@ -22,10 +23,16 @@ public class JwtTokenService {
     }
 
     public String generateToken(String subject, List<String> scopes) {
+        return generateToken(subject, scopes, 0);
+    }
+
+    public String generateToken(String subject, List<String> scopes, int tokenVersion) {
         Instant now = Instant.now();
         return Jwts.builder()
+                .id(UUID.randomUUID().toString())
                 .subject(subject)
                 .claim("scope", String.join(" ", scopes))
+                .claim("token_version", tokenVersion)
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plus(1, ChronoUnit.HOURS)))
                 .signWith(key, Jwts.SIG.HS256)
