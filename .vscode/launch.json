@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "FluxPay — servidor (F5)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app",
+      "cwd": "${workspaceFolder}/app_build",
+      "python": "${workspaceFolder}/app_build/.venv/Scripts/python.exe",
+      "envFile": "${workspaceFolder}/app_build/.env",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "FluxPay — testes (pytest)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-q"],
+      "cwd": "${workspaceFolder}/app_build",
+      "python": "${workspaceFolder}/app_build/.venv/Scripts/python.exe",
+      "envFile": "${workspaceFolder}/app_build/.env",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{"lang":"pt-BR",
+  "name": "Monteiro & Associados",
+  "short_name": "Monteiro",
+  "description": "Escritorio de advocacia: consultoria juridica e defesa de direitos.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f5f0",
+  "theme_color": "#0b1f3a",
+  "icons": [
+    {"lang":"pt-BR",
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

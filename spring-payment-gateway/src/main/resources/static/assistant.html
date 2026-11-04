@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Assistente virtual de suporte do FluxPay">
+  <title>Assistente | FluxPay</title>
+  <link rel="stylesheet" href="/assistant.css">
+  <script src="/assistant.js" defer></script>
+</head>
+<body>
+  <main class="assistant">
+    <header class="assistant__header">
+      <a class="assistant__brand" href="/" aria-label="FluxPay">FluxPay</a>
+      <div>
+        <p class="assistant__eyebrow">SUPORTE</p>
+        <h1>Como podemos ajudar?</h1>
+      </div>
+      <span class="assistant__status"><span></span> Assistente disponível</span>
+    </header>
+
+    <section class="assistant__conversation" aria-label="Conversa" aria-live="polite">
+      <article class="message message--assistant">
+        <span class="message__avatar" aria-hidden="true">F</span>
+        <p>Olá! Posso ajudar com pagamentos, idempotência e recuperação de senha. O que você precisa?</p>
+      </article>
+    </section>
+
+    <div class="assistant__privacy" role="note">
+      Não informe senhas, códigos de recuperação ou dados de cartão. As mensagens não são salvas.
+    </div>
+
+    <form class="assistant__form">
+      <label class="sr-only" for="message">Sua mensagem</label>
+      <textarea id="message" name="message" rows="1" maxlength="500"
+                placeholder="Escreva sua dúvida..." required></textarea>
+      <button type="submit" aria-label="Enviar mensagem">
+        <span>Enviar</span>
+        <svg viewBox="0 0 20 20" aria-hidden="true">
+          <path d="M3 10h13M10 4l6 6-6 6" fill="none" stroke="currentColor"
+                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </form>
+    <p class="assistant__error" role="alert" hidden></p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,28 @@
+spring:
+  r2dbc:
+    url: r2dbc:h2:mem:///paymentsdb;DB_CLOSE_DELAY=-1
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+  sql:
+    init:
+      mode: always
+
+app:
+  bootstrap-admin:
+    username: ${BOOTSTRAP_ADMIN_USERNAME:}
+    password: ${BOOTSTRAP_ADMIN_PASSWORD:}
+  private-profile-database:
+    url: ${PROFILE_DB_JDBC_URL:jdbc:h2:mem:privateprofiles;DB_CLOSE_DELAY=-1}
+    username: ${PROFILE_DB_USER:sa}
+    password: ${PROFILE_DB_PASSWORD:}
+  messaging:
+    recovery-queue: ${RECOVERY_NOTIFICATION_QUEUE:password-recovery-notifications}
+  password-recovery:
+    code-lifetime: ${RECOVERY_CODE_LIFETIME:PT10M}

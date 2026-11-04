@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
+import org.springframework.test.context.ActiveProfiles;
 import reactor.test.StepVerifier;
 
 import java.util.List;
@@ -11,10 +12,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(properties = {
-        "app.auth.username=test-user",
-        "app.auth.password=test-password",
         "jwt.secret=test-secret-with-at-least-thirty-two-bytes"
 })
+@ActiveProfiles("test")
 class JwtTokenServiceTest {
 
     @Autowired
@@ -25,11 +25,11 @@ class JwtTokenServiceTest {
 
     @Test
     void tokenGeradoDeveSerAceitoPeloDecoder() {
-        String token = tokenService.generateToken("tester", List.of("payments", "metrics"));
+        String token = tokenService.generateToken("test-admin", List.of("payments", "metrics"));
 
         StepVerifier.create(decoder.decode(token))
                 .assertNext(jwt -> {
-                    assertThat(jwt.getSubject()).isEqualTo("tester");
+                    assertThat(jwt.getSubject()).isEqualTo("test-admin");
                     assertThat(jwt.getClaimAsString("scope")).isEqualTo("payments metrics");
                 })
                 .verifyComplete();

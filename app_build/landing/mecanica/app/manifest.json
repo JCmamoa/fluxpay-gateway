@@ -1,0 +1,19 @@
+{"lang":"pt-BR",
+  "name": "AutoForce Mecanica",
+  "short_name": "AutoForce",
+  "description": "Oficina mecanica completa com garantia.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f4f4",
+  "theme_color": "#ff6b00",
+  "icons": [
+    {"lang":"pt-BR",
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

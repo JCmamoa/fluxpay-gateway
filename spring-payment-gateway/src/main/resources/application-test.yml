@@ -1,0 +1,20 @@
+spring:
+  r2dbc:
+    url: r2dbc:h2:mem:///paymentsdb;DB_CLOSE_DELAY=-1
+  sql:
+    init:
+      mode: always
+
+jwt:
+  secret: test-secret-with-at-least-thirty-two-bytes
+
+app:
+  bootstrap-admin:
+    username: test-admin
+    password: test-admin-password-123
+  private-profile-database:
+    url: jdbc:h2:mem:testprivateprofiles;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  password-recovery:
+    code-lifetime: PT10M

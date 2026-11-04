@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 @RestController
 @RequestMapping("/api/metrics")
@@ -40,10 +41,15 @@ public class MetricsController {
                                     ? 0L : transaction.getLatencyMs())
                             .average()
                             .orElse(0);
-                    BigDecimal volume = transactions.stream()
-                            .map(transaction -> transaction.getAmount() == null
-                                    ? BigDecimal.ZERO : transaction.getAmount())
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    Map<String, BigDecimal> volumeByCurrency = new TreeMap<>();
+                    transactions.stream()
+                            .filter(transaction -> "APPROVED".equals(transaction.getStatus()))
+                            .filter(transaction -> transaction.getCurrency() != null)
+                            .forEach(transaction -> volumeByCurrency.merge(
+                                    transaction.getCurrency(),
+                                    transaction.getAmount() == null
+                                            ? BigDecimal.ZERO : transaction.getAmount(),
+                                    BigDecimal::add));
 
                     double successRate = total == 0 ? 0 : approved * 100.0 / total;
                     double fallbackRate = total == 0 ? 0 : fallback * 100.0 / total;
@@ -56,7 +62,7 @@ public class MetricsController {
                     result.put("successRatePercent", Math.round(successRate * 100.0) / 100.0);
                     result.put("fallbackRatePercent", Math.round(fallbackRate * 100.0) / 100.0);
                     result.put("avgLatencyMs", Math.round(averageLatency));
-                    result.put("totalVolume", volume);
+                    result.put("volumeByCurrency", volumeByCurrency);
                     return result;
                 });
     }

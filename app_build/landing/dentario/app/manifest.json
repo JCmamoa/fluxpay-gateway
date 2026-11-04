@@ -1,0 +1,19 @@
+{"lang":"pt-BR",
+  "name": "Odonto Prime",
+  "short_name": "OdontoPrime",
+  "description": "Consultorio odontologico completo para toda a familia.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f0fdfa",
+  "theme_color": "#0f766e",
+  "icons": [
+    {"lang":"pt-BR",
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

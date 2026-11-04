@@ -17,6 +17,6 @@ data/
 *.log
 
 # SO / IDE
-.vscode/
 .idea/
 Thumbs.db
+!.vscode/launch.json

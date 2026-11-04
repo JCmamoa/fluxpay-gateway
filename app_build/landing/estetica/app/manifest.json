@@ -1,0 +1,19 @@
+{"lang":"pt-BR",
+  "name": "Bella Vita Estetica",
+  "short_name": "Bella Vita",
+  "description": "Clinica de estetica avancada e bem-estar.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf6f2",
+  "theme_color": "#6b8f71",
+  "icons": [
+    {"lang":"pt-BR",
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
