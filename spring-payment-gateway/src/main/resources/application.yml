@@ -1,0 +1,58 @@
+server:
+  port: 8080
+
+spring:
+  r2dbc:
+    url: r2dbc:h2:mem:///paymentsdb;DB_CLOSE_DELAY=-1
+  sql:
+    init:
+      mode: always
+
+jwt:
+  secret: ${JWT_SECRET:dev-only-secret-change-me-before-production-0123456789}
+
+app:
+  auth:
+    username: ${AUTH_USERNAME:}
+    password: ${AUTH_PASSWORD:}
+  cors:
+    allowed-origins: http://localhost:3000,http://localhost:5173
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      externalGateway:
+        failureRateThreshold: 50
+        slowCallRateThreshold: 80
+        slowCallDurationThreshold: 2s
+        waitDurationInOpenState: 10s
+        slidingWindowSize: 20
+        minimumNumberOfCalls: 10
+        permittedNumberOfCallsInHalfOpenState: 5
+        registerHealthIndicator: true
+  timelimiter:
+    instances:
+      externalGateway:
+        timeoutDuration: 3s
+  retry:
+    instances:
+      externalGateway:
+        maxAttempts: 3
+        waitDuration: 300ms
+  bulkhead:
+    instances:
+      externalGateway:
+        maxConcurrentCalls: 25
+        maxWaitDuration: 500ms
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus,metrics,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
