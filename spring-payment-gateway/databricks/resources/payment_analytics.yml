@@ -1,0 +1,56 @@
+resources:
+  jobs:
+    payment_analytics:
+      name: payment-analytics-medallion
+      max_concurrent_runs: 1
+      run_as:
+        service_principal_name: ${var.service_principal_name}
+      schedule:
+        quartz_cron_expression: "0 0 7 * * ?"
+        timezone_id: America/Sao_Paulo
+        pause_status: UNPAUSED
+      job_clusters:
+        - job_cluster_key: payment_analytics_cluster
+          new_cluster:
+            spark_version: ${var.spark_version}
+            node_type_id: ${var.node_type_id}
+            num_workers: 1
+            data_security_mode: USER_ISOLATION
+      tasks:
+        - task_key: ingest_sources
+          job_cluster_key: payment_analytics_cluster
+          spark_python_task:
+            python_file: ../src/pipeline.py
+            parameters:
+              - --task
+              - ingest
+              - --catalog
+              - ${var.catalog}
+              - --secret-scope
+              - ${var.jdbc_secret_scope}
+              - --jdbc-url-secret-key
+              - ${var.jdbc_url_secret_key}
+              - --jdbc-user-secret-key
+              - ${var.jdbc_user_secret_key}
+              - --jdbc-password-secret-key
+              - ${var.jdbc_password_secret_key}
+              - --api-sources-secret-key
+              - ${var.api_sources_secret_key}
+          libraries:
+            - maven:
+                coordinates: org.postgresql:postgresql:42.7.5
+        - task_key: build_medallion
+          depends_on:
+            - task_key: ingest_sources
+          job_cluster_key: payment_analytics_cluster
+          spark_python_task:
+            python_file: ../src/pipeline.py
+            parameters:
+              - --task
+              - transform
+              - --catalog
+              - ${var.catalog}
+              - --secret-scope
+              - ${var.jdbc_secret_scope}
+              - --api-sources-secret-key
+              - ${var.api_sources_secret_key}

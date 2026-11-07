@@ -1,0 +1,43 @@
+bundle:
+  name: payment-analytics
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog for payment analytics
+    default: payment_analytics
+  jdbc_secret_scope:
+    description: Databricks secret scope containing the PostgreSQL credentials
+  service_principal_name:
+    description: Application ID of the service principal that runs the job
+  jdbc_url_secret_key:
+    description: Secret key containing the PostgreSQL JDBC URL
+    default: payments-jdbc-url
+  jdbc_user_secret_key:
+    description: Secret key containing the PostgreSQL username
+    default: payments-jdbc-user
+  jdbc_password_secret_key:
+    description: Secret key containing the PostgreSQL password
+    default: payments-jdbc-password
+  api_sources_secret_key:
+    description: Optional secret key containing the JSON API source configuration
+    default: ""
+  spark_version:
+    description: Databricks Runtime LTS version
+    default: 15.4.x-scala2.12
+  node_type_id:
+    description: Cloud-specific worker type; change for Azure or GCP workspaces
+    default: m5d.large
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      root_path: ~/.bundle/${bundle.name}/${bundle.target}
+  prod:
+    mode: production
+    workspace:
+      root_path: /Shared/.bundle/${bundle.name}/${bundle.target}

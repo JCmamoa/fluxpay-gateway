@@ -7,7 +7,7 @@ implemented, reviewed, and tested with the chosen provider.**
 
 ## Local development
 
-Java 17 and Maven are required. The default profile is `dev`, which uses an
+Java 25 (LTS) and Maven are required. The default profile is `dev`, which uses an
 in-memory H2 payment database, a simulated gateway, and RabbitMQ for recovery
 notifications. Configure the local services, administrator, and a
 non-production JWT secret before starting:
@@ -195,3 +195,9 @@ k6 run .\load-tests\payment-load.js
 
 Run load tests only against a local test instance, not a production or
 third-party service.
+
+## Databricks Lakehouse
+
+The optional Databricks Asset Bundle, PostgreSQL/API ingestion, Medallion
+Delta tables, data-quality checks, settlement reconciliation, and
+Power BI/Excel delivery are documented in [`databricks/README.md`](databricks/README.md).
