@@ -33,6 +33,29 @@ logger = logging.getLogger("app.ws")
 CLOSE_INVALID_TOKEN = 4401
 CLOSE_BAD_QUERY = 4400
 
+_active_broadcasters: dict[asyncio.AbstractEventLoop, "Broadcaster"] = {}
+
+
+def set_active_broadcaster(broadcaster: "Broadcaster | None") -> None:
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        return
+    if broadcaster is None:
+        _active_broadcasters.pop(loop, None)
+        return
+    _active_broadcasters[loop] = broadcaster
+
+
+def notify_active_broadcaster() -> None:
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        return
+    broadcaster = _active_broadcasters.get(loop)
+    if broadcaster is not None:
+        broadcaster.notify()
+
 
 class ConnectionRegistry:
     """Track live sockets with their individual watermarks (event ``seq``)."""
@@ -72,6 +95,20 @@ class Broadcaster:
         self._cursor = 0
         self._last_send = time.monotonic()
         self._task: asyncio.Task | None = None
+        self._wakeup = asyncio.Event()
+
+    def notify(self) -> None:
+        if self._task is None:
+            return
+        loop = self._task.get_loop()
+        try:
+            current = asyncio.get_running_loop()
+        except RuntimeError:
+            current = None
+        if current is loop:
+            self._wakeup.set()
+        else:
+            loop.call_soon_threadsafe(self._wakeup.set)
 
     def seed_cursor(self) -> None:
         try:
@@ -103,6 +140,9 @@ class Broadcaster:
                 await asyncio.sleep(poll)
                 clients = await self.registry.snapshot()
                 if not clients:
+                    fresh, max_seq = events_service.events_since(self.db, self._cursor)
+                    if fresh:
+                        self._cursor = max(self._cursor, max_seq)
                     continue
                 # Read from the oldest client watermark so a client that
                 # reconnected with an old ``after`` id still catches up.
